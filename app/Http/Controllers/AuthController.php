@@ -11,13 +11,6 @@ class AuthController extends Controller
 {
     use ApiResponse;
 
-    /**
-     * AuthController constructor.
-     */
-    public function __construct()
-    {
-    }
-
     public function register(Request $request)
     {
         //validate
