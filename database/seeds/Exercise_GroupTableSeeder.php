@@ -11,6 +11,6 @@ class Exercise_GroupTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Models\Exercise_Group::class, 30)->create();
+        factory(App\Models\ExerciseGroup::class, 30)->create();
     }
 }

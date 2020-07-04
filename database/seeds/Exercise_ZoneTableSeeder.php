@@ -11,7 +11,7 @@ class Exercise_ZoneTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Models\Exercise_Zone::class, 30)->create();
+        factory(App\Models\ExerciseZone::class, 30)->create();
 
     }
 }
