@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Exercise_Zone extends Model
+class ExerciseZone extends Model
 {
     protected $table='exercise_zones';
 }
