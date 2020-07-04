@@ -21,7 +21,6 @@ class CreateExerciseTable extends Migration
             $table->text('description');
             $table->string('video');
             $table->integer('duration');
-            $table->integer('group_id');//FK
             $table->string('tts_guide');
             $table->integer('met');
             $table->timestamps();

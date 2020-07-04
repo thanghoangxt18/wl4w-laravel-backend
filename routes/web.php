@@ -23,3 +23,4 @@ $router->group(['prefix' => '/auth'], function () use ($router) {
 
 $router->get('/check','AuthController@checkConnection');
 $router->get('getallzones','ZoneController@getAllZones');
+$router->get('getexofagroup','GroupController@getAllExerciseOfAGroupByGroupId');

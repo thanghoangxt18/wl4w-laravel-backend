@@ -13,7 +13,6 @@ $factory->define(Exercise::class, function (Faker $faker) {
         'description'=>$faker->text,
         'video'=>$faker->url,
         'duration'=>$faker->numberBetween(120,240),
-        'group_id'=>$faker->numberBetween(1,5),
         'tts_guide'=>$faker->text,
         'met'=>$faker->numberBetween(0,200)
     ];
