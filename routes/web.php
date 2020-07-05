@@ -21,6 +21,11 @@ $router->group(['prefix' => '/auth'], function () use ($router) {
     $router->post('/detail','AuthController@detail');
 });
 
+//api
+$router->group(['prefix' => 'api/v1'], function () use ($router) {
+    $router->post('get-list-zone','ZoneController@getZoneList');
+});
+//
 $router->get('/check','AuthController@checkConnection');
 $router->get('getallzones','ZoneController@getAllZones');
 $router->get('getexofagroup','GroupController@getAllExerciseOfAGroupByGroupId');
