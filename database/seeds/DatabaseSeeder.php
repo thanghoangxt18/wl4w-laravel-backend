@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call('Exercise_ZoneTableSeeder');
         $this->call('CoursesTableSeeder');
         $this->call('ItemsTableSeeder');
+        $this->call('Group_ItemTableSeeder');
           $this->call('HistoriesTableSeeder');
     }
 }

@@ -17,6 +17,7 @@ class CreateExerciseGroupsTable extends Migration
             $table->bigIncrements('id')->index();
             $table->integer('exercise_id');//FK
             $table->integer('group_id');//FK
+            $table->integer('order');
             $table->timestamps();
         });
     }

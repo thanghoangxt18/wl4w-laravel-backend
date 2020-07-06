@@ -7,10 +7,13 @@ use Illuminate\Http\Request;
 
 class GroupController extends Controller
 {
-    public function getAllExerciseOfAGroupByGroupId(){
+    public function getAllExerciseOfAGroupByGroupId()
+    {
         $id = 1;
         //You may access the group's exercise using the exercise dynamic property.
-        $ex = Group::find(1)->exercise;
+   //     $ex = ShortGroupResource::find($id)->exercise;
+          $ex = Group::find(1)->exercise()->get(array('exercise.id','name'));
+        //$ex = ShortGroupResource::with('exercise');
         return $ex;
     }
 

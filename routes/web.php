@@ -30,3 +30,4 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 $router->get('/check','AuthController@checkConnection');
 $router->get('getallzones','ZoneController@getAllZones');
 $router->get('getexofagroup','GroupController@getAllExerciseOfAGroupByGroupId');
+$router->get('getallgroupanditsexercise','GroupController@getAllGroupAndItsExercise');
