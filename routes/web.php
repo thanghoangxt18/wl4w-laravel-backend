@@ -10,18 +10,21 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
-/** @var $router */
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
+/** @var $router \Illuminate\Support\Facades\Route */
+$router->group(['prefix' => '/api/v1'], function () use ($router) {
+    $router->group(['prefix' => '/auth'], function () use ($router) {
+        $router->post('/register', 'AuthController@register');
+        $router->post('/login', 'AuthController@login');
+        $router->post('/detail','AuthController@detail');
+    });
 
-$router->group(['prefix' => '/auth'], function () use ($router) {
-    $router->post('/register', 'AuthController@register');
-    $router->post('/login', 'AuthController@login');
-    $router->post('/detail','AuthController@detail');
-});
+    $router->get('/check','AuthController@checkConnection');
+    $router->get('getallzones','ZoneController@getAllZones');
+    $router->get('getexofagroup','GroupController@getAllExerciseOfAGroupByGroupId');
+    $router->get('getallgroupanditsexercise','GroupController@getAllGroupAndItsExercise');
 
-$router->get('/check','AuthController@checkConnection');
-$router->get('getallzones','ZoneController@getAllZones');
-$router->get('getexofagroup','GroupController@getAllExerciseOfAGroupByGroupId');
-$router->get('getallgroupanditsexercise','GroupController@getAllGroupAndItsExercise');
+    /*
+     * exercise api
+     */
+    $router->get('/get-detail-exercise/{id}','ExerciseController@getDetailExercise');
+});
