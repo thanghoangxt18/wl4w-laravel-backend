@@ -13,4 +13,14 @@ class GroupController extends Controller
         $ex = Group::find(1)->exercise;
         return $ex;
     }
+
+    //Good
+    public function getAllGroupAndItsExercise()
+    {
+        $groups = Group::all();
+        foreach ($groups as $group) {
+            $group->exercise;
+        }
+        return $groups;
+    }
 }
