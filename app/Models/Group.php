@@ -11,5 +11,4 @@ class Group extends Model
         return $this->belongsToMany('App\Models\Exercise','exercise_groups');
     }
 
-
 }

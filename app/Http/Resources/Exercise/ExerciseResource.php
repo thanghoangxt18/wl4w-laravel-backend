@@ -14,12 +14,13 @@ class ExerciseResource extends JsonResource
         return [
             'id' => $this->format($this->id, 'integer'),
             'name' => $this->format($this->name),
-            'description' => $this->format($this->description),
-            'tts_guide' => $this->format($this->tts_guide),
             'image' => $this->format($this->image),
             'thumb_image' => $this->format($this->thumb_image),
+            'description' => $this->format($this->description),
             'video' => $this->format($this->video),
-            'default_duration' => $this->format($this->default_duration, 'integer'),
+            'default_duration' => $this->format($this->duration, 'integer'),
+            'tts_guide' => $this->format($this->tts_guide),
+            'met' => $this->format($this->met),
         ];
     }
 }
