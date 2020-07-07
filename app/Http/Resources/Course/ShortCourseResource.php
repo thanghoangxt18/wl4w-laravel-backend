@@ -17,7 +17,7 @@ class ShortCourseResource extends JsonResource
      */
     public function toArray($request)
     {
-        $items = ShortItemResource::collection($this->items);
+        $items = ShortItemResource::collection($this->items->sortBy('name'));
         return [
             'id' => $this->format($this->id, 'integer'),
             'name' => $this->format($this->name),

@@ -18,6 +18,7 @@ $factory->define(Course::class, function (Faker $faker) {
                 'grid_half_width',
                 'grid_third_width'
             ]),
-        'zone_id' => $faker->numberBetween(1, 5)
+        'zone_id' => $faker->numberBetween(1, 5),
+        'banner'=>$faker->unique()->url,
     ];
 });
