@@ -17,7 +17,7 @@ class ZoneResource extends JsonResource
      */
     public function toArray($request)
     {
-        $banner = $this->banner ? config('constans.SERVER_MEDIA_URL') . $this->banner : '';
+        $banner = $this->banner ? config('constants.SERVER_MEDIA_URL') . $this->banner : '';
         return [
             'id' => $this->format($this->id, 'integer'),
             'name' => $this->format($this->id,'string'),
