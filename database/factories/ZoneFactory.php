@@ -7,7 +7,14 @@ use Faker\Generator as Faker;
 
 $factory->define(Zone::class, function (Faker $faker) {
     return [
-        'name'=>$faker->unique()->word,
-        'banner'=>$faker->unique()->url
+        'name' => $faker->unique()->randomElement(
+            [
+                'Legs',
+                'Arm',
+                'Head',
+                'Waist',
+                'Femoral'
+            ]),
+        'banner' => $faker->unique()->url
     ];
 });

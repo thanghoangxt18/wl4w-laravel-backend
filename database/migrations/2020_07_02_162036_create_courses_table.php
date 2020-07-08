@@ -19,6 +19,7 @@ class CreateCoursesTable extends Migration
             $table->text('description');
             $table->string('layout_type');
             $table->integer('zone_id');
+            $table->string('banner');
             $table->timestamps();
         });
     }

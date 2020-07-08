@@ -9,7 +9,7 @@ trait ApiResponse
         if (is_null($data) || "" == $data)
             $data = new \stdClass();
         return response()->json([
-            'status' => $code,
+            'code' => $code,
             'message' => $message,
             'data' => $data
         ], 200);
@@ -20,7 +20,7 @@ trait ApiResponse
         if (is_null($data))
             $data = new \stdClass();
         return response()->json([
-            'status' => $code,
+            'code' => $code,
             'message' => $message,
             'data' => $data
         ], 200);
