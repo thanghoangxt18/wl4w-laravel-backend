@@ -29,6 +29,9 @@ class ZoneController extends Controller
     //api2: get-course-by-zone
     public function getCourseByZone(Request $request)
     {
+        $this->validate($request,[
+           'zone_id'=>'required'
+        ]);
         $zoneId = $request->input('zone_id');
         $course = Course::where('zone_id','=',$zoneId)->first();
         $course->items;
@@ -43,6 +46,9 @@ class ZoneController extends Controller
 
     //api3: get-course-item
     public function getCourseItem(Request $request){
+        $this->validate($request,[
+            'item_id'=>'required'
+        ]);
         $itemId = $request->input('item_id');
         $item = Item::findOrFail($itemId);
         $item->groups;
@@ -55,6 +61,9 @@ class ZoneController extends Controller
 
     //api4: get-group-exercise
     public function getDetailGroupWorkout(Request $request){
+        $this->validate($request,[
+            'group_id'=>'required'
+        ]);
         $groupId = $request->input('group_id');
         $group = Group::findOrFail($groupId);
         $group->exercise;
