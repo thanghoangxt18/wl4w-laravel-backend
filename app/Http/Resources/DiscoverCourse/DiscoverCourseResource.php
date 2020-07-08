@@ -17,9 +17,9 @@ class DiscoverCourseResource extends JsonResource
         $group = $firstItem ? ShortGroupResource::collection($firstItem->groups) : [];
         return [
             'id' => $this->format($this->id, 'integer'),
-            'title' => $this->format($this->title),
+            'name' => $this->format($this->name),
             'layout_type' => $this->format($this->layout_type),
-            'group_workouts' => $this->format($group, 'array'),
+            'group_workouts' => $group,
         ];
     }
 }
