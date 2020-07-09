@@ -29,11 +29,11 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->post('get-course-item','ZoneController@getCourseItem');
     //api 4
     $router->post('get-detail-group-workout','ZoneController@getDetailGroupWorkout');
-
-//    $router->post('get-groups-exercise', 'GroupController@getAllGroupAndItsExercise');
-//    $router->get('/check', 'AuthController@checkConnection');
-//    $router->get('get-all-zones', 'ZoneController@getAllZones');
-//    $router->get('getexofagroup', 'GroupController@getAllExerciseOfAGroupByGroupId');
-//    $router->get('getallgroupanditsexercise', 'GroupController@getAllGroupAndItsExercise');
+    //api 5
+    $router->post('get-detail-exercise', 'ExerciseController@getDetailExercise');
+    //api 6
+    $router->post('get-list-discover-course', 'CourseController@getListDiscoverCourse');
+    //api 7
+    $router->post('search-discover', 'CourseController@searchDiscover');
 
 });

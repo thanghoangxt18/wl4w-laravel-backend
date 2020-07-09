@@ -20,7 +20,7 @@ class ExerciseResource extends JsonResource
             'video' => $this->format($this->video),
             'default_duration' => $this->format($this->duration, 'integer'),
             'tts_guide' => $this->format($this->tts_guide),
-            'met' => $this->format($this->met),
+            'met' => $this->format($this->met, 'integer'),
         ];
     }
 }
