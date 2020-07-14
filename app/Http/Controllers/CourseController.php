@@ -56,16 +56,6 @@ class CourseController extends Controller
                 ->get();
         }
         return $this->successResponse(ShortGroupResource::collection($result), 'success');
-
-//        foreach ($courses as $course) {
-//            $firstItem = $course->items->first();
-//            $group = $firstItem ? ShortGroupResource::collection($firstItem->groups) : [];
-//            if ($group) {
-//                $result = $group;
-//            }
-//        }
-        // dd($result);
-        //    return $this->successResponse($result, 'success');
     }
 
     public function listGroupIdInResult($result)
