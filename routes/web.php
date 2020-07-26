@@ -18,7 +18,9 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->group(['prefix' => '/auth'], function () use ($router) {
         $router->post('/register', 'AuthController@register');
+        //api 8
         $router->post('/login', 'AuthController@login');
+        //api 9
         $router->post('/detail', 'AuthController@detail');
     });
 
@@ -38,10 +40,19 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->post('search-discover', 'CourseController@searchDiscover');
     //api 10
     $router->post('create-new-exercise','ExerciseController@createOrUpdateExercise');
+
     //api 11
     $router->post('get-exercise-by-keyword','ExerciseController@getExerciseByKeyword');
     //api 12
     $router->post('update-exercise','ExerciseController@createOrUpdateExercise');
     //api 13
     $router->post('delete-exercise','ExerciseController@deleteExercise');
+    //api 14
+    $router->post('create-new-group','GroupController@createNewGroup');
+    //api 15
+    $router->post('get-group-by-keyword','GroupController@getGroupByKeyword');
+    //api 16
+    $router->post('update-group','GroupController@updateGroup');
+    //api 17
+    $router->post('delete-group','GroupController@deleteGroup');
 });
