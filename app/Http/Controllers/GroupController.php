@@ -71,12 +71,13 @@ class GroupController extends Controller
             'listExerciseId' => 'required|array'
         ]);
 
-        $group = new Group();
-        $group->id = $request->id;
+        $group_id = $request->id;
+        $group = Group::find($group_id);
         $group->name = $request->name;
         $bannerPath = Storage::put('images/group', $request->banner);
         $group->banner = $bannerPath;
         $group->description = $request->description;
+        $group->save();
         $listExerciseId = $request->listExerciseId;
         $order = 0;
         try {
@@ -114,5 +115,8 @@ class GroupController extends Controller
             );
         }
     }
+
+
+
 
 }

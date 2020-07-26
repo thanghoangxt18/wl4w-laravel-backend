@@ -55,4 +55,12 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->post('update-group','GroupController@updateGroup');
     //api 17
     $router->post('delete-group','GroupController@deleteGroup');
+    //api 18
+    $router->post('create-new-zone','ZoneController@createNewZone');
+    //api 19
+    $router->post('get-zone-by-keyword','ZoneController@getZoneByKeyword');
+    //api 20
+    $router->post('update-zone','ZoneController@updateZone');
+    //api 21
+    $router->post('delete-zone','ZoneController@deleteZone');
 });
