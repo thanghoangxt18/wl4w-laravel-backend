@@ -21,6 +21,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
         $router->post('/login', 'AuthController@login');
         $router->post('/detail', 'AuthController@detail');
     });
+
     //api 1
     $router->post('get-list-zone', 'ZoneController@getZoneList');
     //api 2
@@ -35,5 +36,12 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->post('get-list-discover-course', 'CourseController@getListDiscoverCourse');
     //api 7
     $router->post('search-discover', 'CourseController@searchDiscover');
-
+    //api 10
+    $router->post('create-new-exercise','ExerciseController@createOrUpdateExercise');
+    //api 11
+    $router->post('get-exercise-by-keyword','ExerciseController@getExerciseByKeyword');
+    //api 12
+    $router->post('update-exercise','ExerciseController@createOrUpdateExercise');
+    //api 13
+    $router->post('delete-exercise','ExerciseController@deleteExercise');
 });
