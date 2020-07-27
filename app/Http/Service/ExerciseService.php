@@ -7,8 +7,6 @@ namespace App\Http\Service;
 use App\Models\Exercise;
 use App\Traits\ApiResponse;
 use Illuminate\Support\Facades\Storage;
-use phpDocumentor\Reflection\Types\This;
-use function Symfony\Component\VarDumper\Dumper\esc;
 
 class ExerciseService
 {

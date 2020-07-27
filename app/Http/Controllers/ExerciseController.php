@@ -49,9 +49,7 @@ class ExerciseController extends Controller
                 $request->tts_guide,
                 $request->met
             );
-            return $this->successResponse(
-                ['message' => 'Successfully'], 'Success'
-            );
+            return $this->successResponse([],'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
                 'Failed', 402, ['message' => 'Create failed']
@@ -82,11 +80,8 @@ class ExerciseController extends Controller
             Storage::delete($exercise->image);
             Storage::delete($exercise->thumb_image);
             $exercise->delete();
-            return $this->successResponse(
-                ['message'=>'Delete successfully'],
-                'Successfull'
-            );
-        } catch (Exception $e){
+            return $this->successResponse([], 'Successfull');
+        } catch (Exception $e) {
             return $this->errorResponse(
                 $e->getMessage(),
                 402

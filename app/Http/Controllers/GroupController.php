@@ -36,9 +36,7 @@ class GroupController extends Controller
                         ['exercise_id' => $exerciseId, 'group_id' => $group->id, 'order' => ++$order]
                     );
             };
-            return $this->successResponse(
-                ['message' => 'Successfully'], 'Success'
-            );
+            return $this->successResponse([], 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
                 'Failed', 402, ['message' => 'Create failed']
@@ -64,7 +62,7 @@ class GroupController extends Controller
     public function updateGroup(Request $request)
     {
         $this->validate($request, [
-            'id' => 'required|string',
+            'id' => 'required|int',
             'name' => 'required|string',
             'banner' => 'required|file',
             'description' => 'required|string',
@@ -88,9 +86,7 @@ class GroupController extends Controller
                         ['exercise_id' => $exerciseId, 'group_id' => $group->id, 'order' => ++$order]
                     );
             };
-            return $this->successResponse(
-                ['message' => 'Successfully'], 'Success'
-            );
+            return $this->successResponse([], 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
                 'Failed', 402, ['message' => 'Create failed']
@@ -101,22 +97,16 @@ class GroupController extends Controller
     public function deleteGroup(Request $request)
     {
         $this->validate($request, [
-            'group_id' => 'string|required'
+            'group_id' => 'int|required'
         ]);
         try {
             DB::table('exercise_group')->where('group_id', '=', $request->group_id);
             Group::where('id','=',$request->group_id)->delete();
-            return $this->successResponse(
-                ['message' => 'Successfully'], 'Success'
-            );
+            return $this->successResponse([], 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
                 'Failed', 402, ['message' => 'Create failed']
             );
         }
     }
-
-
-
-
 }
