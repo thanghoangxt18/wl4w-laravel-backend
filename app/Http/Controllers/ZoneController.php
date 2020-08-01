@@ -80,22 +80,14 @@ class ZoneController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string',
-            'banner' => 'required|file',
-            'listExerciseId' => 'required|array'
+            'banner' => 'required|file'
         ]);
         $zone = new Zone();
         $zone->name = $request->name;
         $bannerPath = Storage::put('images/zone', $request->banner);
         $zone->banner = $bannerPath;
-        $zone->save();
-        $listExerciseId = $request->listExerciseId;
         try {
-            foreach ($listExerciseId as $exerciseId) {
-                DB::table('exercise_zones')
-                    ->insert(
-                        ['exercise_id' => $exerciseId, 'zone_id' => $zone->id]
-                    );
-            };
+            $zone->save();
             return $this->successResponse(
                 ['message' => 'Successfully'], 'Success'
             );
@@ -126,30 +118,57 @@ class ZoneController extends Controller
         $this->validate($request, [
             'id' => 'required|string',
             'name' => 'required|string',
-            'banner' => 'required|file',
-            'listExerciseId' => 'required|array'
+            'banner' => 'required|file'
         ]);
 
         $zone = Zone::find($request->id);
         $zone->name = $request->name;
         $bannerPath = Storage::put('images/zone', $request->banner);
         $zone->banner = $bannerPath;
-        $zone->save();
-        $listExerciseId = $request->listExerciseId;
         try {
-            DB::table('exercise_zones')->where('zone_id', '=', $zone->id)->delete();
-            foreach ($listExerciseId as $exerciseId) {
-                DB::table('exercise_zones')
-                    ->insert(
-                        ['exercise_id' => $exerciseId, 'zone_id' => $zone->id]
-                    );
-            };
+            $zone->save();
             return $this->successResponse(
                 ['message' => 'Successfully'], 'Success'
             );
         } catch (\Exception $e) {
             return $this->errorResponse(
                 'Failed', 402, ['message' => 'Create failed']
+            );
+        }
+    }
+
+    public function addNewExerciseToZone(Request $request)
+    {
+        $this->validate($request, [
+            'exercise_id' => 'required|int',
+            'zone_id' => 'required|int',
+        ]);
+        try {
+            DB::table('exercise_zones')->insert(
+                ['exercise_id' => $request->exercise_id, 'zone_id' => $request->zone_id]);
+            return $this->successResponse([], 'Success');
+        } catch (\Exception $e) {
+            return $this->errorResponse(
+                'Failed', 402, ['message' => 'Create failed']
+            );
+        }
+    }
+
+    public function deleteExerciseOfZone(Request $request)
+    {
+        $this->validate($request, [
+            'zone_id' => 'required|int',
+            'exercise_id' => 'required|int'
+        ]);
+        try {
+            DB::table('exercise_zones')
+                ->where('exercise_id', '=', $request->exercise_id)
+                ->where('zone_id', '=', $request->zone_id)
+                ->delete();
+            return $this->successResponse([], 'Success');
+        } catch (\Exception $e) {
+            return $this->errorResponse(
+                'Failed', 402, []
             );
         }
     }
@@ -171,6 +190,4 @@ class ZoneController extends Controller
             );
         }
     }
-
-
 }

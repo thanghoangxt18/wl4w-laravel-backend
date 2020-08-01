@@ -83,4 +83,12 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->post('delete-item','CourseController@deleteItem');
     //api 31
     $router->post('delete-course','CourseController@deleteCourse');
+    //api 32
+    $router->post('add-new-exercise-to-group','GroupController@addNewExerciseToGroup');
+    //api 33
+    $router->post('delete-exercise-of-group','GroupController@deleteExerciseOfGroup');
+    //api 34
+    $router->post('add-new-exercise-to-zone','ZoneController@addNewExerciseToZone');
+    //api 35
+    $router->post('delete-exercise-of-zone','ZoneController@deleteExerciseOfZone');
 });

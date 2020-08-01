@@ -19,23 +19,14 @@ class GroupController extends Controller
             'name' => 'required|string',
             'banner' => 'required|file',
             'description' => 'required|string',
-            'listExerciseId' => 'required|array'
         ]);
         $group = new Group();
         $group->name = $request->name;
         $bannerPath = Storage::put('images/group', $request->banner);
         $group->banner = $bannerPath;
         $group->description = $request->description;
-        $group->save();
-        $listExerciseId = $request->listExerciseId;
-        $order = 0;
         try {
-            foreach ($listExerciseId as $exerciseId) {
-                DB::table('exercise_groups')
-                    ->insert(
-                        ['exercise_id' => $exerciseId, 'group_id' => $group->id, 'order' => ++$order]
-                    );
-            };
+            $group->save();
             return $this->successResponse([], 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
@@ -66,7 +57,6 @@ class GroupController extends Controller
             'name' => 'required|string',
             'banner' => 'required|file',
             'description' => 'required|string',
-            'listExerciseId' => 'required|array'
         ]);
 
         $group_id = $request->id;
@@ -75,21 +65,49 @@ class GroupController extends Controller
         $bannerPath = Storage::put('images/group', $request->banner);
         $group->banner = $bannerPath;
         $group->description = $request->description;
-        $group->save();
-        $listExerciseId = $request->listExerciseId;
-        $order = 0;
         try {
-            DB::table('exercise_groups')->where('group_id', '=', $group->id)->delete();
-            foreach ($listExerciseId as $exerciseId) {
-                DB::table('exercise_groups')
-                    ->insert(
-                        ['exercise_id' => $exerciseId, 'group_id' => $group->id, 'order' => ++$order]
-                    );
-            };
+            $group->save();
             return $this->successResponse([], 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
                 'Failed', 402, ['message' => 'Create failed']
+            );
+        }
+    }
+
+    public function addNewExerciseToGroup(Request $request)
+    {
+        $this->validate($request, [
+            'exercise_id' => 'required|int',
+            'group_id' => 'required|int',
+            'order' => 'required|int'
+        ]);
+        try {
+            DB::table('exercise_groups')->insert(
+                ['exercise_id' => $request->exercise_id, 'group_id' => $request->group_id, 'order' => $request->order]);
+            return $this->successResponse([], 'Success');
+        } catch (\Exception $e) {
+            return $this->errorResponse(
+                'Failed', 402, ['message' => 'Create failed']
+            );
+        }
+    }
+
+    public function deleteExerciseOfGroup(Request $request)
+    {
+        $this->validate($request, [
+            'group_id' => 'required|int',
+            'exercise_id' => 'required|int'
+        ]);
+        try {
+            DB::table('exercise_groups')
+                ->where('exercise_id', '=', $request->exercise_id)
+                ->where('group_id', '=', $request->group_id)
+                ->delete();
+            return $this->successResponse([], 'Success');
+        } catch (\Exception $e) {
+            return $this->errorResponse(
+                'Failed', 402, []
             );
         }
     }
@@ -101,7 +119,7 @@ class GroupController extends Controller
         ]);
         try {
             DB::table('exercise_group')->where('group_id', '=', $request->group_id);
-            Group::where('id','=',$request->group_id)->delete();
+            Group::where('id', '=', $request->group_id)->delete();
             return $this->successResponse([], 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
