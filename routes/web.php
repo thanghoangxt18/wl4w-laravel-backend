@@ -63,4 +63,32 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->post('update-zone','ZoneController@updateZone');
     //api 21
     $router->post('delete-zone','ZoneController@deleteZone');
+    //api 22
+    $router->post('create-new-course','CourseController@createNewCourse');
+    //api 23
+    $router->post('get-basic-of-course','CourseController@getBasicOfCourse');
+    //api 24
+    $router->post('update-basic-of-course','CourseController@updateBasicCourse');
+    //api 25
+    $router->post('get-items-by-course','CourseController@getItemsByCourse');
+    //api 26
+    $router->post('create-new-item','CourseController@createNewItem');
+    //api 27
+    $router->post('update-basic-item','CourseController@updateBasicItem');
+    //api 28
+    $router->post('add-new-group-to-item','CourseController@addNewGroupToItem');
+    //api 29
+    $router->post('delete-group-of-item','CourseController@deleteGroupOfItem');
+    //api 30
+    $router->post('delete-item','CourseController@deleteItem');
+    //api 31
+    $router->post('delete-course','CourseController@deleteCourse');
+    //api 32
+    $router->post('add-new-exercise-to-group','GroupController@addNewExerciseToGroup');
+    //api 33
+    $router->post('delete-exercise-of-group','GroupController@deleteExerciseOfGroup');
+    //api 34
+    $router->post('add-new-exercise-to-zone','ZoneController@addNewExerciseToZone');
+    //api 35
+    $router->post('delete-exercise-of-zone','ZoneController@deleteExerciseOfZone');
 });
