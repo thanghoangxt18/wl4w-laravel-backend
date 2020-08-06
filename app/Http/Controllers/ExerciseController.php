@@ -27,8 +27,8 @@ class ExerciseController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string',
-            'image' => 'required|file',
-            'thumb_image' => 'required|file',
+            'image' => 'required',
+            'thumb_image' => 'required',
             'description' => 'required|string',
             'video' => 'required|string',
             'duration' => 'required|int',
