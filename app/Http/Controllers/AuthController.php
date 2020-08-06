@@ -44,7 +44,8 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if ($token = $this->guard()->attempt($credentials)) {
-            return $this->respondWithToken($token);
+            $data = $this->respondWithToken($token)->original;
+            return $this->successResponse($data,'success');
         }
         return $this->errorResponse('Unauthorized', 401);
     }
