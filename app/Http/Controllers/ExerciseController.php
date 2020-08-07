@@ -49,10 +49,10 @@ class ExerciseController extends Controller
                 $request->tts_guide,
                 $request->met
             );
-            return $this->successResponse([],'Success');
+            return $this->successResponse('','Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
-                'Failed', 402, ['message' => 'Create failed']
+                'Failed', 402, ['message' => 'Crreate failed']
             );
         }
     }
