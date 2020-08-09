@@ -88,12 +88,13 @@ class ExerciseController extends Controller
 
     public function getExerciseByKeyword(Request $request)
     {
-        $this->validate($request, [
-            'keyword' => 'required|string'
-        ]);
-        $exerciseListSearched = Exercise::query()
-            ->where('name', 'LIKE', '%' . $request->keyword . "%")
-            ->paginate(10);
+        if($request->keyword){
+            $exerciseListSearched = Exercise::query()
+                ->where('name', 'LIKE', '%' . $request->keyword . "%")
+                ->paginate(10);
+        } else {
+            $exerciseListSearched = Exercise::paginate(10);
+        }
 
         $result = new ExerciseCollection($exerciseListSearched);
         return $this->successResponse($result, 'Success', 200);
