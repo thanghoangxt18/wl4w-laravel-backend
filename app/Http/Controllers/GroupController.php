@@ -37,15 +37,13 @@ class GroupController extends Controller
 
     public function getGroupByKeyword(Request $request)
     {
-        $this->validate($request, [
-            'keyword' => 'required|string'
-        ]);
-
-        $groupListSearched = Group::query()
-            ->where('name', 'LIKE', '%' . $request->keyword . "%")
-            ->paginate(10);
-
-
+        if ($request->keyword !== '') {
+            $groupListSearched = Group::query()
+                ->where('name', 'LIKE', '%' . $request->keyword . "%")
+                ->paginate(10);
+        } else {
+            $groupListSearched = Group::paginate(10);
+        }
         $result = new GroupCollection($groupListSearched);
         return $this->successResponse($result, 'Success', 200);
     }
@@ -55,15 +53,17 @@ class GroupController extends Controller
         $this->validate($request, [
             'id' => 'required|int',
             'name' => 'required|string',
-            'banner' => 'required|file',
             'description' => 'required|string',
         ]);
 
         $group_id = $request->id;
         $group = Group::find($group_id);
         $group->name = $request->name;
-        $bannerPath = Storage::put('images/group', $request->banner);
-        $group->banner = $bannerPath;
+        $bannerPath = null;
+        if($request->banner) {
+            $bannerPath = Storage::put('images/group', $request->banner);
+        }
+        $group->banner = $bannerPath ? $bannerPath : $group->banner;
         $group->description = $request->description;
         try {
             $group->save();

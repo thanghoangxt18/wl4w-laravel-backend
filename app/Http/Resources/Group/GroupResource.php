@@ -18,10 +18,10 @@ class GroupResource extends JsonResource
      */
     public function toArray($request)
     {
-        $exercise = ExerciseResource::collection($this->exercise);
-        $total_exercise = count($exercise);
+        $exercises = ExerciseResource::collection($this->exercise);
+        $total_exercise = count($exercises);
         $total_time = 0;
-        foreach ($exercise as $item)
+        foreach ($exercises as $item)
             $total_time += $item->duration;
         return [
             'id' => $this->format($this->id, 'integer'),
@@ -30,7 +30,7 @@ class GroupResource extends JsonResource
             'description' => $this->format($this->description),
             'total_time' => $total_time,
             'total_exercise' => $total_exercise,
-            'exercises' => $exercise
+            'exercises' => $exercises
         ];
     }
 }

@@ -26,20 +26,21 @@ class CourseController extends Controller
 
     public function searchDiscover(Request $request)
     {
-        $this->validate($request, [
-            'keyword' => 'required',
-        ]);
         $keyword = $request->input('keyword');
         $limit = $request->input('limit', 5);
         $discoverCourseIds = Course::where('zone_id', 0)->pluck('id')->toArray();
         $itemIds = Item::whereIn('course_id', $discoverCourseIds)->pluck('id')->toArray();
         $groupIds = GroupItem::whereIn('item_id', $itemIds)->pluck('group_id')->toArray();
-
-        $courses = Course::query()
-            ->where('zone_id', 0)
-            ->where('name', 'LIKE', '%' . $keyword . "%")
-            ->get();
-
+        if ($keyword !== '') {
+            $courses = Course::query()
+                ->where('zone_id', 0)
+                ->where('name', 'LIKE', '%' . $keyword . "%")
+                ->get();
+        } else {
+            $courses = Course::query()
+                ->where('zone_id', 0)
+                ->paginate(10);
+        }
         $result = [];
 
         if (count($courses) > 0) {
@@ -108,8 +109,7 @@ class CourseController extends Controller
             'name' => 'required|string',
             'description' => 'required|string',
             'layout_type' => 'required|string',
-            'zone_id' => 'required|int',
-            'banner' => 'required|file'
+            'zone_id' => 'required|int'
         ]);
 
         $course = Course::findOrFail($request->course_id);
@@ -117,7 +117,10 @@ class CourseController extends Controller
         $course->description = $request->description;
         $course->layout_type = $request->layout_type;
         $course->zone_id = $request->zone_id;
-        $bannerPath = Storage::put('images/course', $request->banner);
+        $bannerPath = $course->banner;
+        if($request->banner) {
+            $bannerPath = Storage::put('images/course', $request->banner);
+        }
         $course->banner = $bannerPath;
         try {
             $course->save();
@@ -135,7 +138,7 @@ class CourseController extends Controller
 
         $course = Course::findOrFail($request->course_id);
         $items = $course->items;
-        $result =  new ShortCourseResource($course);
+        $result = new ShortCourseResource($course);
         return $this->successResponse($result, 'success', 200);
     }
 
@@ -203,39 +206,41 @@ class CourseController extends Controller
         }
     }
 
-    public function deleteItem(Request $request){
-        $this->validate($request,[
-            'item_id'=>'required|int'
+    public function deleteItem(Request $request)
+    {
+        $this->validate($request, [
+            'item_id' => 'required|int'
         ]);
         $itemId = $request->item_id;
         try {
-            DB::table('groups_items')->where('item_id','=',$itemId)->delete();
-            $item=Item::findOrFail($itemId);
+            DB::table('groups_items')->where('item_id', '=', $itemId)->delete();
+            $item = Item::findOrFail($itemId);
             $item->delete();
-            return $this->successResponse([],'success');
-        } catch (\Exception $e){
-            return $this->errorResponse('fail',402);
+            return $this->successResponse([], 'success');
+        } catch (\Exception $e) {
+            return $this->errorResponse('fail', 402);
         }
     }
 
-    public function deleteCourse(Request $request){
-        $this->validate($request,[
-            'course_id'=>'required|string'
+    public function deleteCourse(Request $request)
+    {
+        $this->validate($request, [
+            'course_id' => 'required|string'
         ]);
         try {
 
             $courseId = $request->course_id;
-            $items = Item::where('course_id','=',$courseId)->get();
-            foreach ($items as $item){
+            $items = Item::where('course_id', '=', $courseId)->get();
+            foreach ($items as $item) {
                 $itemId = $item->id;
-                DB::table('groups_items')->where('item_id','=',$itemId)->delete();
+                DB::table('groups_items')->where('item_id', '=', $itemId)->delete();
             }
-            Item::where('course_id','=',$courseId)->delete();
-            Course::where('id','=',$courseId)->delete();
-            return $this->successResponse([],'Success');
+            Item::where('course_id', '=', $courseId)->delete();
+            Course::where('id', '=', $courseId)->delete();
+            return $this->successResponse([], 'Success');
 
-        }catch (\Exception $exception){
-            return $this->errorResponse('Failed',402);
+        } catch (\Exception $exception) {
+            return $this->errorResponse('Failed', 402);
         }
     }
 }
