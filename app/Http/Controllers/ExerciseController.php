@@ -23,7 +23,7 @@ class ExerciseController extends Controller
         return $this->successResponse(new ExerciseResource($exercise), 'success');
     }
 
-    public function createOrUpdateExercise(Request $request)
+    public function createNewExercise(Request $request)
     {
         $this->validate($request, [
             'name' => 'required|string',
@@ -35,11 +35,40 @@ class ExerciseController extends Controller
             'tts_guide' => 'required|string',
             'met' => 'required|int'
         ]);
-        $id = $request->id ? $request->id : '';
 
         try {
             ExerciseService::saveToExerciseTable(
-                $id,
+                $id=0,
+                $request->name,
+                $request->file('image'),
+                $request->file('thumb_image'),
+                $request->description,
+                $request->video,
+                $request->duration,
+                $request->tts_guide,
+                $request->met
+            );
+            return $this->successResponse('','Success');
+        } catch (\Exception $e) {
+            return $this->errorResponse(
+                'Failed', 402, ['message' => 'Crreate failed']
+            );
+        }
+    }
+    public function updateExercise(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required|int',
+            'name' => 'required|string',
+            'description' => 'required|string',
+            'video' => 'required|string',
+            'duration' => 'required|int',
+            'tts_guide' => 'required|string',
+            'met' => 'required|int'
+        ]);
+        try {
+            ExerciseService::saveToExerciseTable(
+                $request->id,
                 $request->name,
                 $request->file('image'),
                 $request->file('thumb_image'),

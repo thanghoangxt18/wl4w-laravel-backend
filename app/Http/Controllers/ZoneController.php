@@ -7,6 +7,7 @@ use App\Http\Resources\Group\GroupCollection;
 use App\Http\Resources\Group\GroupResource;
 use App\Http\Resources\Item\ItemResource;
 use App\Http\Resources\Zone\ZoneCollection;
+use App\Http\Resources\Zone\ZoneResource;
 use App\Models\Course;
 use App\Models\Group;
 use App\Models\Item;
@@ -98,18 +99,32 @@ class ZoneController extends Controller
         }
     }
 
+    public function getExerciseOfZone(Request $request) {
+        $this->validate($request,[
+            'id'=>'required|int'
+        ]);
+        $zone = Zone::findOrFail($request->id);
+        $zone->exercise;
+        $result = new ZoneResource($zone);
+        return $this->successResponse($result, 'Success', 200);
+    }
+
     public function getZoneByKeyword(Request $request)
     {
-        $this->validate($request, [
-            'keyword' => 'required|string'
-        ]);
-
-        $zoneListSearched = Zone::query()
-            ->where('name', 'LIKE', '%' . $request->keyword . "%")
-            ->paginate(10);
-
-
-        $result = new ZoneCollection($zoneListSearched);
+        $keyword = $request->input('keyword');
+        if ($keyword !== '') {
+            $zones = Zone::query()
+                ->where('name', 'LIKE', '%' . $keyword . "%")
+                ->paginate(10);
+        } else {
+            $zones = Zone::paginate(10);
+        }
+        if (count($zones) > 0) {
+            foreach ($zones as $zone) $zone->exercise;
+        }
+//        $result = $zones[0]->exercise;
+//        return $zones[0];
+        $result = new ZoneCollection($zones);
         return $this->successResponse($result, 'Success', 200);
     }
 
@@ -117,13 +132,15 @@ class ZoneController extends Controller
     {
         $this->validate($request, [
             'id' => 'required|string',
-            'name' => 'required|string',
-            'banner' => 'required|file'
+            'name' => 'required|string'
         ]);
 
         $zone = Zone::find($request->id);
         $zone->name = $request->name;
-        $bannerPath = Storage::put('images/zone', $request->banner);
+        $bannerPath = $zone->banner;
+        if ($request->banner) {
+            $bannerPath = Storage::put('images/zone', $request->banner);
+        }
         $zone->banner = $bannerPath;
         try {
             $zone->save();

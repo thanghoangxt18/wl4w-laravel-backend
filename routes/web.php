@@ -39,12 +39,11 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     //api 7
     $router->post('search-discover', 'CourseController@searchDiscover');
     //api 10
-    $router->post('create-new-exercise','ExerciseController@createOrUpdateExercise');
-
+    $router->post('create-new-exercise','ExerciseController@createNewExercise');
     //api 11
     $router->post('get-exercise-by-keyword','ExerciseController@getExerciseByKeyword');
     //api 12
-    $router->post('update-exercise','ExerciseController@createOrUpdateExercise');
+    $router->post('update-exercise','ExerciseController@updateExercise');
     //api 13
     $router->post('delete-exercise','ExerciseController@deleteExercise');
     //api 14
@@ -91,4 +90,6 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->post('add-new-exercise-to-zone','ZoneController@addNewExerciseToZone');
     //api 35
     $router->post('delete-exercise-of-zone','ZoneController@deleteExerciseOfZone');
+    //api 36
+    $router->post('get-exercise-of-zone','ZoneController@getExerciseOfZone');
 });
