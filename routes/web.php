@@ -25,7 +25,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     });
 
     //api 1
-    $router->post('get-list-zone', 'ZoneController@getZoneList');
+    $router->post('get-list-zone-and-exercise', 'ZoneController@getZoneListAndExercise');
     //api 2
     $router->post('get-course-by-zone','ZoneController@getCourseByZone');
     //api 3
@@ -92,4 +92,6 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->post('delete-exercise-of-zone','ZoneController@deleteExerciseOfZone');
     //api 36
     $router->post('get-exercise-of-zone','ZoneController@getExerciseOfZone');
+    //api 37
+    $router->post('get-zone-list','ZoneController@getZoneList');
 });

@@ -37,12 +37,13 @@ class GroupController extends Controller
 
     public function getGroupByKeyword(Request $request)
     {
+        $per_page = $request->per_page ? $request->per_page : 5;
         if ($request->keyword !== '') {
             $groupListSearched = Group::query()
                 ->where('name', 'LIKE', '%' . $request->keyword . "%")
-                ->paginate(10);
+                ->paginate($per_page);
         } else {
-            $groupListSearched = Group::paginate(10);
+            $groupListSearched = Group::paginate($per_page);
         }
         $result = new GroupCollection($groupListSearched);
         return $this->successResponse($result, 'Success', 200);
@@ -60,7 +61,7 @@ class GroupController extends Controller
         $group = Group::find($group_id);
         $group->name = $request->name;
         $bannerPath = null;
-        if($request->banner) {
+        if ($request->banner) {
             $bannerPath = Storage::put('images/group', $request->banner);
         }
         $group->banner = $bannerPath ? $bannerPath : $group->banner;
