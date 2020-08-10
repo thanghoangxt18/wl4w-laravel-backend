@@ -9,6 +9,8 @@ use App\Models\Exercise;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
+use PHPUnit\Exception;
 
 class ExerciseController extends Controller
 {
@@ -38,7 +40,7 @@ class ExerciseController extends Controller
 
         try {
             ExerciseService::saveToExerciseTable(
-                $id=0,
+                $id = 0,
                 $request->name,
                 $request->file('image'),
                 $request->file('thumb_image'),
@@ -48,13 +50,14 @@ class ExerciseController extends Controller
                 $request->tts_guide,
                 $request->met
             );
-            return $this->successResponse('','Success');
+            return $this->successResponse('', 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
                 'Failed', 402, ['message' => 'Crreate failed']
             );
         }
     }
+
     public function updateExercise(Request $request)
     {
         $this->validate($request, [
@@ -78,7 +81,7 @@ class ExerciseController extends Controller
                 $request->tts_guide,
                 $request->met
             );
-            return $this->successResponse('','Success');
+            return $this->successResponse('', 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
                 'Failed', 402, ['message' => 'Crreate failed']
@@ -88,12 +91,13 @@ class ExerciseController extends Controller
 
     public function getExerciseByKeyword(Request $request)
     {
-        if($request->keyword){
+        $per_page = $request->per_page ? $request->per_page : 5;
+        if ($request->keyword) {
             $exerciseListSearched = Exercise::query()
                 ->where('name', 'LIKE', '%' . $request->keyword . "%")
-                ->paginate(10);
+                ->paginate($per_page);
         } else {
-            $exerciseListSearched = Exercise::paginate(10);
+            $exerciseListSearched = Exercise::paginate($per_page);
         }
 
         $result = new ExerciseCollection($exerciseListSearched);
@@ -102,9 +106,13 @@ class ExerciseController extends Controller
 
     public function deleteExercise(Request $request)
     {
-        $this->validate($request, [
-            'exercise_id' => 'required|string'
-        ]);
+        try {
+            $this->validate($request, [
+                'exercise_id' => 'required|string'
+            ]);
+        } catch (ValidationException $e) {
+            return $this->errorResponse($e->getMessage(), 402);
+        }
         $exercise = Exercise::findOrFail($request->exercise_id);
         try {
             Storage::delete($exercise->image);
@@ -118,5 +126,4 @@ class ExerciseController extends Controller
             );
         }
     }
-
 }

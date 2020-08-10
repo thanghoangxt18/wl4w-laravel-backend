@@ -6,6 +6,8 @@ use App\Http\Resources\Course\ShortCourseResource;
 use App\Http\Resources\Group\GroupCollection;
 use App\Http\Resources\Group\GroupResource;
 use App\Http\Resources\Item\ItemResource;
+use App\Http\Resources\Zone\ShortZoneCollection;
+use App\Http\Resources\Zone\ShortZoneResource;
 use App\Http\Resources\Zone\ZoneCollection;
 use App\Http\Resources\Zone\ZoneResource;
 use App\Models\Course;
@@ -22,10 +24,10 @@ class ZoneController extends Controller
     use ApiResponse;
 
     //api1:get-list-zone
-    public function getZoneList()
+    public function getZoneListAndExercise(Request $request)
     {
-        $zones = Zone::paginate(3);
-        //chi can co {{data-link}} no tu phan trang luon
+        $per_page = $request->per_page ? $request->per_page : 5;
+        $zones = Zone::paginate($per_page);
         $result = new ZoneCollection($zones);
         return $this->successResponse($result, 'success');
     }
@@ -99,9 +101,10 @@ class ZoneController extends Controller
         }
     }
 
-    public function getExerciseOfZone(Request $request) {
-        $this->validate($request,[
-            'id'=>'required|int'
+    public function getExerciseOfZone(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required|int'
         ]);
         $zone = Zone::findOrFail($request->id);
         $zone->exercise;
@@ -111,19 +114,18 @@ class ZoneController extends Controller
 
     public function getZoneByKeyword(Request $request)
     {
+        $per_page = $request->per_page ? $request->per_page : 5;
         $keyword = $request->input('keyword');
         if ($keyword !== '') {
             $zones = Zone::query()
                 ->where('name', 'LIKE', '%' . $keyword . "%")
-                ->paginate(10);
+                ->paginate($per_page);
         } else {
-            $zones = Zone::paginate(10);
+            $zones = Zone::paginate($per_page);
         }
         if (count($zones) > 0) {
             foreach ($zones as $zone) $zone->exercise;
         }
-//        $result = $zones[0]->exercise;
-//        return $zones[0];
         $result = new ZoneCollection($zones);
         return $this->successResponse($result, 'Success', 200);
     }
@@ -206,5 +208,13 @@ class ZoneController extends Controller
                 'Failed', 402, ['message' => 'Create failed']
             );
         }
+    }
+
+    public function getZoneList(Request $request)
+    {
+        $per_page = $request->per_page ? $request->per_page : 5;
+        $zones = Zone::paginate($per_page);
+        $result = new ShortZoneCollection($zones);
+        return $this->successResponse($result, 'success');
     }
 }
