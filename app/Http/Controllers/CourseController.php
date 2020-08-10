@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Course\CourseCollection;
 use App\Http\Resources\Course\ShortCourseResource;
 use App\Http\Resources\DiscoverCourse\DiscoverCourseResource;
 use App\Http\Resources\Group\ShortGroupResource;
@@ -17,6 +18,15 @@ use Illuminate\Support\Facades\Storage;
 class CourseController extends Controller
 {
     use ApiResponse;
+
+
+    public function getCourseList(Request $request)
+    {
+        $per_page = $request->per_page ? $request->per_page : 5;
+        $courses = Course::paginate($per_page);
+        $result = new CourseCollection($courses);
+        return $this->successResponse($result, 'success');
+    }
 
     public function getListDiscoverCourse()
     {

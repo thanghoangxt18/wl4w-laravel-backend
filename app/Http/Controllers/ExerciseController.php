@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Exercise\ExerciseCollection;
 use App\Http\Resources\Exercise\ExerciseResource;
+use App\Http\Resources\Exercise\ShortestExerciseResource;
 use App\Http\Service\ExerciseService;
 use App\Models\Exercise;
 use App\Traits\ApiResponse;
@@ -15,6 +16,15 @@ use PHPUnit\Exception;
 class ExerciseController extends Controller
 {
     use ApiResponse;
+
+    public function getExerciseList(Request $request)
+    {
+        $per_page = $request->per_page ? $request->per_page : 5;
+        $exercies = Exercise::paginate($per_page);
+        $result = new ExerciseCollection($exercies);
+        return $this->successResponse($result, 'success');
+    }
+
 
     public function getDetailExercise(Request $request)
     {

@@ -13,6 +13,14 @@ class GroupController extends Controller
 {
     use ApiResponse;
 
+    public function getGroupList(Request $request)
+    {
+        $per_page = $request->per_page ? $request->per_page : 5;
+        $groups = Group::paginate($per_page);
+        $result = new GroupCollection($groups);
+        return $this->successResponse($result, 'success');
+    }
+
     public function createNewGroup(Request $request)
     {
         $this->validate($request, [
