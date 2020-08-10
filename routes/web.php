@@ -94,4 +94,10 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->post('get-exercise-of-zone','ZoneController@getExerciseOfZone');
     //api 37
     $router->post('get-zone-list','ZoneController@getZoneList');
+    //api 38
+    $router->post('get-exercise-list','ExerciseController@getExerciseList');
+    //api 39
+    $router->post('get-group-list','GroupController@getGroupList');
+    //api 40
+    $router->post('get-course-list','CourseController@getCourseList');
 });
