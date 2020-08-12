@@ -253,4 +253,23 @@ class CourseController extends Controller
             return $this->errorResponse('Failed', 402);
         }
     }
+
+    public function getCourseByKeyword(Request $request)
+    {
+        $per_page = $request->per_page ? $request->per_page : 5;
+        $keyword = $request->input('keyword');
+        if ($keyword !== '') {
+            $courses = Course::query()
+                ->where('name', 'LIKE', '%' . $keyword . "%")
+                ->paginate($per_page);
+        } else {
+            $courses = Course::paginate($per_page);
+        }
+        if (count($courses) > 0) {
+            $result = new CourseCollection($courses);
+        } else {
+            $result = [];
+        }
+        return $this->successResponse($result, 'Success', 200);
+    }
 }
