@@ -101,6 +101,8 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
         $router->post('get-group-list', 'GroupController@getGroupList');
         //api 40
         $router->post('get-course-list', 'CourseController@getCourseList');
+        //api 41
+        $router->post('get-course-by-keyword', 'CourseController@getCourseByKeyword');
     });
 
 });
