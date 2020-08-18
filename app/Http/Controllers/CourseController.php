@@ -54,7 +54,6 @@ class CourseController extends Controller
 
         if (count($courses) > 0) {
             foreach ($courses as $course) {
-                $course->items;
                 foreach ($course->items as $item) {
                     foreach ($item->groups as $group) {
                         $groupIdArray = $this->listGroupIdInResult($result);
@@ -63,9 +62,7 @@ class CourseController extends Controller
                 }
             }
         } else {
-            $result = Group::query()
-                ->where('name', 'LIKE', '%' . $keyword . "%")
-                ->get();
+            $result = Group::query()->where('name', 'LIKE', '%' . $keyword . "%")->get();
         }
         return $this->successResponse(ShortGroupResource::collection($result), 'success');
     }
@@ -73,8 +70,9 @@ class CourseController extends Controller
     public function listGroupIdInResult($result)
     {
         $groupIdArray = [];
-        foreach ($result as $item)
+        foreach ($result as $item) {
             $groupIdArray[] = $item->id;
+        }
         return $groupIdArray;
     }
 
