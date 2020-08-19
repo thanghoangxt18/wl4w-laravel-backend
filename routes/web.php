@@ -26,7 +26,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
     $router->group(['middleware' => 'jwt.auth'], function ($router) {
         //api 1
-        $router->post('get-list-zone-and-exercise', 'ZoneController@getZoneListAndExercise');
+        $router->post('get-list-zone', 'ZoneController@getZoneListAndExercise');
         //api 2
         $router->post('get-course-by-zone', 'ZoneController@getCourseByZone');
         //api 3
