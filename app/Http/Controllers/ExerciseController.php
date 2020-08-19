@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Exercise\ExerciseCollection;
 use App\Http\Resources\Exercise\ExerciseResource;
-use App\Http\Resources\Exercise\ShortestExerciseResource;
 use App\Http\Service\ExerciseService;
 use App\Models\Exercise;
 use App\Traits\ApiResponse;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Course\CourseCollection;
 use App\Http\Resources\Course\ShortCourseResource;
+use App\Http\Resources\DiscoverCourse\DiscoverCourseCollection;
 use App\Http\Resources\DiscoverCourse\DiscoverCourseResource;
 use App\Http\Resources\Group\GroupCollection;
 use App\Http\Resources\Group\ShortGroupResource;
@@ -20,30 +21,26 @@ class CourseController extends Controller
 {
     use ApiResponse;
 
-
     public function getCourseList(Request $request)
     {
-        $per_page = $request->per_page ? $request->per_page : 5;
-        $courses = Course::paginate($per_page);
+        $perPage = $request->per_page ? $request->per_page : 10;
+        $courses = Course::paginate($perPage);
         $result = new CourseCollection($courses);
         return $this->successResponse($result, 'success');
     }
 
-    public function getListDiscoverCourse()
+    public function getListDiscoverCourse(Request $request)
     {
-        $courses = Course::where('zone_id', 0)->paginate(5);
-        return $this->successResponse(DiscoverCourseResource::collection($courses), 'success');
+        $perPage = $request->per_page ? $request->per_page : 10;
+        $courses = Course::where('zone_id', 0)->paginate($perPage);
+        $result = new DiscoverCourseCollection($courses);
+        return $this->successResponse($result, 'success');
     }
 
     public function searchDiscover(Request $request)
     {
+        $perPage = $request->per_page ? $request->per_page : 10;
         $keyword = $request->input('keyword');
-
-        $limit = $request->input('limit', 5);
-        $discoverCourseIds = Course::where('zone_id', 0)->pluck('id')->toArray();
-        $itemIds = Item::whereIn('course_id', $discoverCourseIds)->pluck('id')->toArray();
-        $groupIds = GroupItem::whereIn('item_id', $itemIds)->pluck('group_id')->toArray();
-
         if ($keyword !== '') {
             $courses = Course::query()
                 ->where('zone_id', 0)
@@ -57,19 +54,15 @@ class CourseController extends Controller
 
         if (count($courses) > 0) {
             foreach ($courses as $course) {
-                $course->items;
                 foreach ($course->items as $item) {
                     foreach ($item->groups as $group) {
-                        $group->exercise;
                         $groupIdArray = $this->listGroupIdInResult($result);
                         if (!in_array($group->id, $groupIdArray)) $result[] = $group;
                     }
                 }
             }
         } else {
-            $result = Group::query()
-                ->where('name', 'LIKE', '%' . $keyword . "%")
-                ->get();
+            $result = Group::query()->where('name', 'LIKE', '%' . $keyword . "%")->get();
         }
 
         $page = $request->input('page') ? (int)$request->input('page') : 1;
@@ -93,8 +86,9 @@ class CourseController extends Controller
     public function listGroupIdInResult($result)
     {
         $groupIdArray = [];
-        foreach ($result as $item)
+        foreach ($result as $item) {
             $groupIdArray[] = $item->id;
+        }
         return $groupIdArray;
     }
 
@@ -165,7 +159,6 @@ class CourseController extends Controller
         ]);
 
         $course = Course::findOrFail($request->course_id);
-        $items = $course->items;
         $result = new ShortCourseResource($course);
         return $this->successResponse($result, 'success', 200);
     }
@@ -274,14 +267,15 @@ class CourseController extends Controller
 
     public function getCourseByKeyword(Request $request)
     {
-        $per_page = $request->per_page ? $request->per_page : 5;
+        $perPage = $request->per_page ? $request->per_page : 10;
         $keyword = $request->input('keyword');
         if ($keyword !== '') {
             $courses = Course::query()
                 ->where('name', 'LIKE', '%' . $keyword . "%")
-                ->paginate($per_page);
+                ->where('zone_id', '!=', 0)
+                ->paginate($perPage);
         } else {
-            $courses = Course::paginate($per_page);
+            $courses = Course::where('zone_id', '!=', 0)->paginate($perPage);
         }
         if (count($courses) > 0) {
             $result = new CourseCollection($courses);

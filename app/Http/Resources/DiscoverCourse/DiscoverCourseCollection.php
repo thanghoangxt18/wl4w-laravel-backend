@@ -8,7 +8,7 @@ class DiscoverCourseCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'exercises' => DiscoverCourseResource::collection($this->collection),
+            'courses' => DiscoverCourseResource::collection($this->collection),
             'pagination' => [
                 'total' => $this->total(),
                 'count' => $this->count(),
