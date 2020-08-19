@@ -6,6 +6,7 @@ use App\Http\Resources\Course\CourseCollection;
 use App\Http\Resources\Course\ShortCourseResource;
 use App\Http\Resources\DiscoverCourse\DiscoverCourseCollection;
 use App\Http\Resources\DiscoverCourse\DiscoverCourseResource;
+use App\Http\Resources\Group\GroupCollection;
 use App\Http\Resources\Group\ShortGroupResource;
 use App\Models\Course;
 use App\Models\Group;
@@ -47,8 +48,7 @@ class CourseController extends Controller
                 ->get();
         } else {
             $courses = Course::query()
-                ->where('zone_id', 0)
-                ->paginate($perPage);
+                ->where('zone_id', 0)->get();
         }
         $result = [];
 
@@ -64,7 +64,23 @@ class CourseController extends Controller
         } else {
             $result = Group::query()->where('name', 'LIKE', '%' . $keyword . "%")->get();
         }
-        return $this->successResponse(ShortGroupResource::collection($result), 'success');
+
+        $page = $request->input('page') ? (int)$request->input('page') : 1;
+        $perPage = $request->input('per_page') ? (int)$request->input('per_page') : 2;
+        $total = count($result);
+        $total_pages = ceil($total / $perPage);
+        $page = max($page, 1);
+        $page = min($page, $total_pages);
+        $offset = ($page - 1) * $perPage < 0 ? 0 : ($page - 1) * $perPage;
+        $result1 = array_slice($result, $offset, $perPage);
+        $output = new \stdClass();
+        $output -> group_workouts = ShortGroupResource::collection($result1);
+        $output-> pagination = new \stdClass();
+        $output-> pagination->total = $total;
+        $output-> pagination->per_page = $perPage;
+        $output-> pagination->current_page = $page;
+        $output-> pagination->total_page = $total_pages;
+        return $this->successResponse($output, 'success');
     }
 
     public function listGroupIdInResult($result)
@@ -124,7 +140,7 @@ class CourseController extends Controller
         $course->layout_type = $request->layout_type;
         $course->zone_id = $request->zone_id;
         $bannerPath = $course->banner;
-        if($request->banner) {
+        if ($request->banner) {
             $bannerPath = Storage::put('images/course', $request->banner);
         }
         $course->banner = $bannerPath;
