@@ -95,7 +95,7 @@ class GroupController extends Controller
             DB::table('exercise_groups')->insert(
                 ['exercise_id' => $request->exercise_id,
                     'group_id' => $request->group_id,
-                       'order' => $request->order ? (int)$request->order : 1]);
+                    'order' => $request->order ? (int)$request->order : 1]);
             return $this->successResponse([], 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
@@ -129,13 +129,41 @@ class GroupController extends Controller
             'group_id' => 'int|required'
         ]);
         try {
-            DB::table('exercise_group')->where('group_id', '=', $request->group_id);
+            DB::table('exercise_group')->where('group_id', '=', $request->group_id)->delete();
             Group::where('id', '=', $request->group_id)->delete();
             return $this->successResponse([], 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
                 'Failed', 402, ['message' => 'Create failed']
             );
+        }
+    }
+
+    public function updateOrderOfExercise(Request $request)
+    {
+        $this->validate($request, [
+            'group_list_order' => 'required'
+        ]);
+        $groupListOrder = $request->input('group_list_order');
+        $h =json_encode($groupListOrder);
+        dd($h);
+        dd($h->group_id);
+        $groupId = (int)$groupListOrder->group_id;
+        $exerciseOrderList = (array)$groupListOrder->exercise_order;
+        try {
+            foreach ($exerciseOrderList as $item) {
+                DB::table('exercise_group')
+                    ->where('group_id', '=', $groupId)
+                    ->where('exercise_id', '=', (int)$item->id)
+                    ->delete();
+
+                DB::table('exercise_group')
+                    ->insert(['exercise_id' => (int)$item->id, 'group_id' => $groupId, 'order' => (int)$item->index]);
+            }
+            return $this->successResponse([], 'Success');
+        } catch (\Exception $e) {
+            return $this->errorResponse(
+                'Failed', 402, ['message'=>$e->getMessage()]);
         }
     }
 }

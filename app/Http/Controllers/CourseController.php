@@ -51,7 +51,6 @@ class CourseController extends Controller
                 ->where('zone_id', 0)->get();
         }
         $result = [];
-
         if (count($courses) > 0) {
             foreach ($courses as $course) {
                 foreach ($course->items as $item) {
@@ -62,7 +61,7 @@ class CourseController extends Controller
                 }
             }
             $page = $request->input('page') ? (int)$request->input('page') : 1;
-            $perPage = $request->input('per_page') ? (int)$request->input('per_page') : 2;
+            $perPage = $request->input('per_page') ? (int)$request->input('per_page') : 5;
             $total = count($result);
             $total_pages = ceil($total / $perPage);
             $page = max($page, 1);
@@ -70,7 +69,7 @@ class CourseController extends Controller
             $offset = ($page - 1) * $perPage < 0 ? 0 : ($page - 1) * $perPage;
             $result1 = array_slice($result, $offset, $perPage);
             $output = new \stdClass();
-            $output->group_workouts = ShortGroupResource::collection($result1);
+            $output->groups = ShortGroupResource::collection($result1);
             $output->pagination = new \stdClass();
             $output->pagination->total = $total;
             $output->pagination->count = count($result1);
@@ -79,8 +78,9 @@ class CourseController extends Controller
             $output->pagination->total_page = $total_pages;
             return $this->successResponse($output, 'success');
         } else {
-            $result = Group::query()->where('name', 'LIKE', '%' . $keyword . "%")->get();
-            return $this->successResponse($result, 'success');
+            $result = Group::query()->where('name', 'LIKE', '%' . $keyword . "%")->paginate(5);
+            $output = new GroupCollection($result);
+            return $this->successResponse($output, 'success');
         }
     }
 
