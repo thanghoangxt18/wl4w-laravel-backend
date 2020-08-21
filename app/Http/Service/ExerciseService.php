@@ -12,24 +12,25 @@ class ExerciseService
 {
     use ApiResponse;
 
-    public static function saveToExerciseTable($id = 0, $name, $image = null, $thumb_image = null, $description, $video, $type = 0, $reps = 0, $time_per_rep = 0, $tts_guide, $met)
+    public static function saveToExerciseTable($id = 0, $name, $image = null, $thumb_image = null, $description, $video, $type = "by_time", $reps = 0, $time_per_rep = 0, $tts_guide, $met)
     {
         if ($image) $imagePath = Storage::put('/images/exercise', $image);
         if ($thumb_image) $thumb_imagePath = Storage::put('/images/exercise', $thumb_image);
+        else $thumb_imagePath = "";
         if ($id == 0) {
+            dd($type);
             $exercise = new Exercise();
-            self::setDataToExercise($exercise, $name, $imagePath, $thumb_imagePath, $description, $video, (int)$type, (int)$reps, (int)$time_per_rep, $tts_guide, $met);
+            self::setDataToExercise($exercise, $name, $imagePath, $thumb_imagePath, $description, $video, $type, $reps, $time_per_rep, $tts_guide, $met);
             $exercise->save();
         } else {
             $exercise = Exercise::find($id);
             if (!$image) $imagePath = $exercise->image;
-            if (!$thumb_image) $thumb_imagePath = $exercise->thumb_image;
-            self::setDataToExercise($exercise, $name, $imagePath, $thumb_imagePath, $description, $video, (int)$type, (int)$reps, (int)$time_per_rep, $tts_guide, $met);
+            self::setDataToExercise($exercise, $name, $imagePath, $thumb_imagePath, $description, $video, $type, $reps, $time_per_rep, $tts_guide, $met);
             $exercise->save();
         }
     }
 
-    public static function setDataToExercise($exercise, $name, $imagePath, $thumb_imagePath, $description, $video,$type, $reps, $time_per_rep, $tts_guide, $met)
+    public static function setDataToExercise($exercise, $name, $imagePath, $thumb_imagePath, $description, $video, $type, $reps, $time_per_rep, $tts_guide, $met)
     {
         $exercise->name = $name;
         $exercise->image = $imagePath;

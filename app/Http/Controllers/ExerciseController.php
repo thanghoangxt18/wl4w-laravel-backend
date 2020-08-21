@@ -39,14 +39,13 @@ class ExerciseController extends Controller
         $this->validate($request, [
             'name' => 'required|string',
             'image' => 'required',
-            'thumb_image' => 'required',
             'description' => 'required|string',
             'video' => 'required|string',
-            'type' => 'int',
+            'type' => 'string|required',
             'reps' => 'int',
             'time_per_rep' => 'int',
             'tts_guide' => 'required|string',
-            'met' => 'required|int'
+            'met' => 'required|required|regex:/^\d+(\.\d{1,4})?$/'
         ]);
 
         try {
@@ -66,7 +65,7 @@ class ExerciseController extends Controller
             return $this->successResponse('', 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
-                'Failed', 402, ['message' => 'Crreate failed']
+                'Failed', 402, ['message' => $e->getMessage()]
             );
         }
     }
@@ -78,11 +77,11 @@ class ExerciseController extends Controller
             'name' => 'required|string',
             'description' => 'required|string',
             'video' => 'required|string',
-            'type' => 'int',
+            'type' => 'string',
             'reps' => 'int',
             'time_per_rep' => 'int',
             'tts_guide' => 'required|string',
-            'met' => 'required|int'
+            'met' => 'required|required|regex:/^\d+(\.\d{1,4})?$/'
         ]);
         try {
             ExerciseService::saveToExerciseTable(
@@ -101,7 +100,7 @@ class ExerciseController extends Controller
             return $this->successResponse('', 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
-                'Failed', 402, ['message' => 'Crreate failed']
+                'Failed', 402, ['message' => $e->getMessage()]
             );
         }
     }
