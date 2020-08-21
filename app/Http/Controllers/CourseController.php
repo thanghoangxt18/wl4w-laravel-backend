@@ -23,7 +23,7 @@ class CourseController extends Controller
 
     public function getCourseList(Request $request)
     {
-        $perPage = $request->per_page ? $request->per_page : 10;
+        $perPage = $request->per_page ? (int)$request->per_page : 10;
         $courses = Course::paginate($perPage);
         $result = new CourseCollection($courses);
         return $this->successResponse($result, 'success');
@@ -31,7 +31,7 @@ class CourseController extends Controller
 
     public function getListDiscoverCourse(Request $request)
     {
-        $perPage = $request->per_page ? $request->per_page : 10;
+        $perPage = $request->per_page ? (int)$request->per_page : 10;
         $courses = Course::where('zone_id', 0)->paginate($perPage);
         $result = new DiscoverCourseCollection($courses);
         return $this->successResponse($result, 'success');
@@ -39,7 +39,7 @@ class CourseController extends Controller
 
     public function searchDiscover(Request $request)
     {
-        $perPage = $request->per_page ? $request->per_page : 10;
+        $perPage = $request->per_page ? (int)$request->per_page : 10;
         $keyword = $request->input('keyword');
         if ($keyword !== '') {
             $courses = Course::query()
@@ -61,26 +61,27 @@ class CourseController extends Controller
                     }
                 }
             }
+            $page = $request->input('page') ? (int)$request->input('page') : 1;
+            $perPage = $request->input('per_page') ? (int)$request->input('per_page') : 2;
+            $total = count($result);
+            $total_pages = ceil($total / $perPage);
+            $page = max($page, 1);
+            $page = min($page, $total_pages);
+            $offset = ($page - 1) * $perPage < 0 ? 0 : ($page - 1) * $perPage;
+            $result1 = array_slice($result, $offset, $perPage);
+            $output = new \stdClass();
+            $output->group_workouts = ShortGroupResource::collection($result1);
+            $output->pagination = new \stdClass();
+            $output->pagination->total = $total;
+            $output->pagination->count = count($result1);
+            $output->pagination->per_page = $perPage;
+            $output->pagination->current_page = $page;
+            $output->pagination->total_page = $total_pages;
+            return $this->successResponse($output, 'success');
         } else {
             $result = Group::query()->where('name', 'LIKE', '%' . $keyword . "%")->get();
+            return $this->successResponse($result, 'success');
         }
-
-        $page = $request->input('page') ? (int)$request->input('page') : 1;
-        $perPage = $request->input('per_page') ? (int)$request->input('per_page') : 2;
-        $total = count($result);
-        $total_pages = ceil($total / $perPage);
-        $page = max($page, 1);
-        $page = min($page, $total_pages);
-        $offset = ($page - 1) * $perPage < 0 ? 0 : ($page - 1) * $perPage;
-        $result1 = array_slice($result, $offset, $perPage);
-        $output = new \stdClass();
-        $output -> group_workouts = ShortGroupResource::collection($result1);
-        $output-> pagination = new \stdClass();
-        $output-> pagination->total = $total;
-        $output-> pagination->per_page = $perPage;
-        $output-> pagination->current_page = $page;
-        $output-> pagination->total_page = $total_pages;
-        return $this->successResponse($output, 'success');
     }
 
     public function listGroupIdInResult($result)
@@ -267,7 +268,7 @@ class CourseController extends Controller
 
     public function getCourseByKeyword(Request $request)
     {
-        $perPage = $request->per_page ? $request->per_page : 10;
+        $perPage = $request->per_page ? (int)$request->per_page : 10;
         $keyword = $request->input('keyword');
         if ($keyword !== '') {
             $courses = Course::query()
@@ -277,11 +278,7 @@ class CourseController extends Controller
         } else {
             $courses = Course::where('zone_id', '!=', 0)->paginate($perPage);
         }
-        if (count($courses) > 0) {
-            $result = new CourseCollection($courses);
-        } else {
-            $result = [];
-        }
+        $result = new CourseCollection($courses);
         return $this->successResponse($result, 'Success', 200);
     }
 }

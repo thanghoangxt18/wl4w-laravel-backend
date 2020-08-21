@@ -15,7 +15,7 @@ class GroupController extends Controller
 
     public function getGroupList(Request $request)
     {
-        $per_page = $request->per_page ? $request->per_page : 5;
+        $per_page = $request->per_page ? (int)$request->per_page : 5;
         $groups = Group::paginate($per_page);
         $result = new GroupCollection($groups);
         return $this->successResponse($result, 'success');
@@ -45,7 +45,7 @@ class GroupController extends Controller
 
     public function getGroupByKeyword(Request $request)
     {
-        $per_page = $request->per_page ? $request->per_page : 5;
+        $per_page = $request->per_page ? (int)$request->per_page : 5;
         if ($request->keyword !== '') {
             $groupListSearched = Group::query()
                 ->where('name', 'LIKE', '%' . $request->keyword . "%")
@@ -89,11 +89,13 @@ class GroupController extends Controller
         $this->validate($request, [
             'exercise_id' => 'required|int',
             'group_id' => 'required|int',
-            'order' => 'required|int'
+            'order' => 'int'
         ]);
         try {
             DB::table('exercise_groups')->insert(
-                ['exercise_id' => $request->exercise_id, 'group_id' => $request->group_id, 'order' => $request->order]);
+                ['exercise_id' => $request->exercise_id,
+                    'group_id' => $request->group_id,
+                       'order' => $request->order ? (int)$request->order : 1]);
             return $this->successResponse([], 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(

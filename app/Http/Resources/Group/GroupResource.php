@@ -22,7 +22,7 @@ class GroupResource extends JsonResource
         $total_exercise = count($exercises);
         $total_time = 0;
         foreach ($exercises as $item)
-            $total_time += $item->duration;
+            $total_time += (int)$item->reps * (int)$item->time_per_rep;
         return [
             'id' => $this->format($this->id, 'integer'),
             'name' => $this->format($this->name),

@@ -18,7 +18,7 @@ class ExerciseController extends Controller
 
     public function getExerciseList(Request $request)
     {
-        $per_page = $request->per_page ? $request->per_page : 5;
+        $per_page = $request->per_page ? (int)$request->per_page : 5;
         $exercies = Exercise::paginate($per_page);
         $result = new ExerciseCollection($exercies);
         return $this->successResponse($result, 'success');
@@ -42,7 +42,9 @@ class ExerciseController extends Controller
             'thumb_image' => 'required',
             'description' => 'required|string',
             'video' => 'required|string',
-            'duration' => 'required|int',
+            'type' => 'int',
+            'reps' => 'int',
+            'time_per_rep' => 'int',
             'tts_guide' => 'required|string',
             'met' => 'required|int'
         ]);
@@ -55,7 +57,9 @@ class ExerciseController extends Controller
                 $request->file('thumb_image'),
                 $request->description,
                 $request->video,
-                $request->duration,
+                $request->type,
+                $request->reps,
+                $request->time_per_rep,
                 $request->tts_guide,
                 $request->met
             );
@@ -74,7 +78,9 @@ class ExerciseController extends Controller
             'name' => 'required|string',
             'description' => 'required|string',
             'video' => 'required|string',
-            'duration' => 'required|int',
+            'type' => 'int',
+            'reps' => 'int',
+            'time_per_rep' => 'int',
             'tts_guide' => 'required|string',
             'met' => 'required|int'
         ]);
@@ -86,7 +92,9 @@ class ExerciseController extends Controller
                 $request->file('thumb_image'),
                 $request->description,
                 $request->video,
-                $request->duration,
+                $request->type,
+                $request->reps,
+                $request->time_per_rep,
                 $request->tts_guide,
                 $request->met
             );
@@ -100,7 +108,7 @@ class ExerciseController extends Controller
 
     public function getExerciseByKeyword(Request $request)
     {
-        $per_page = $request->per_page ? $request->per_page : 5;
+        $per_page = $request->per_page ? (int)$request->per_page : 5;
         if ($request->keyword) {
             $exerciseListSearched = Exercise::query()
                 ->where('name', 'LIKE', '%' . $request->keyword . "%")

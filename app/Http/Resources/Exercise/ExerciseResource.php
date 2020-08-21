@@ -18,7 +18,9 @@ class ExerciseResource extends JsonResource
             'thumb_image' => $this->format($this->thumb_image),
             'description' => $this->format($this->description),
             'video' => $this->format($this->video),
-            'default_duration' => $this->format($this->duration, 'integer'),
+            'type' => $this->format($this->type, 'integer'),
+            'reps' => $this->format($this->reps, 'integer'),
+            'time_per_rep' => $this->format($this->time_per_rep, 'integer'),
             'tts_guide' => $this->format($this->tts_guide),
             'met' => $this->format($this->met, 'integer'),
         ];

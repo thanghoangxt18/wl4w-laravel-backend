@@ -26,7 +26,7 @@ class ZoneController extends Controller
     //api1:get-list-zone
     public function getZoneListAndExercise(Request $request)
     {
-        $per_page = $request->per_page ? $request->per_page : 5;
+        $per_page = $request->per_page ? (int)$request->per_page : 5;
         $zones = Zone::paginate($per_page);
         $result = new ZoneCollection($zones);
         return $this->successResponse($result, 'success');
@@ -114,7 +114,7 @@ class ZoneController extends Controller
 
     public function getZoneByKeyword(Request $request)
     {
-        $per_page = $request->per_page ? $request->per_page : 5;
+        $per_page = $request->per_page ? (int)$request->per_page : 5;
         $keyword = $request->input('keyword');
         if ($keyword !== '') {
             $zones = Zone::query()
@@ -212,7 +212,7 @@ class ZoneController extends Controller
 
     public function getZoneList(Request $request)
     {
-        $per_page = $request->per_page ? $request->per_page : 5;
+        $per_page = $request->per_page ? (int)$request->per_page : 5;
         $zones = Zone::paginate($per_page);
         $result = new ShortZoneCollection($zones);
         return $this->successResponse($result, 'success');

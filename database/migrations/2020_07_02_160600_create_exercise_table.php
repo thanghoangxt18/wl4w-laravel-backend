@@ -20,7 +20,10 @@ class CreateExerciseTable extends Migration
             $table->string('thumb_image');
             $table->text('description');
             $table->string('video');
-            $table->integer('duration');
+            //$table->integer('duration');
+            $table->integer('type');
+            $table->integer('reps');
+            $table->integer('time_per_rep');
             $table->string('tts_guide');
             $table->integer('met');
             $table->timestamps();
