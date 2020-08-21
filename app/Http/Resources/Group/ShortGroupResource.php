@@ -24,7 +24,7 @@ class ShortGroupResource extends JsonResource
        $total_exercise= count($exercise);
        $total_time = 0;
        foreach ($exercise as $item)
-           $total_time+= $item->duration;
+           $total_time+= $item->reps * $item->time_per_rep;
        return [
            'id'=>$this->format($this->id,'integer'),
            'name'=>$this->format($this->name),
