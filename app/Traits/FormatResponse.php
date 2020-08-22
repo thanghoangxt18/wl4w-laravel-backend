@@ -8,9 +8,8 @@ trait FormatResponse
 {
     public function format($data, string $data_type = "string")
     {
-        if (empty($data))
-        {
-            switch ($data_type){
+        if (empty($data)) {
+            switch ($data_type) {
                 case "integer":
                     return 0;
                 case "double":
@@ -24,13 +23,14 @@ trait FormatResponse
                 default:
                     return "";
             }
-        }
-        else{
-            try{
-                settype($data,$data_type);
-            }catch (\Exception $exception){
-            }
-            finally{
+        } else {
+            try {
+                settype($data, $data_type);
+            } catch (\Exception $exception) {
+            } finally {
+//                if ($data_type == "double") {
+//                    return sprintf("%.1f", (double)$data);
+//                }
                 return $data;
             }
         }
