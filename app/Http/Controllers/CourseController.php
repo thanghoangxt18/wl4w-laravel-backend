@@ -202,11 +202,12 @@ class CourseController extends Controller
         $this->validate($request, [
             'item_id' => 'required|int',
             'group_id' => 'required|int',
-            'order' => 'required|int'
+            'order' => 'int'
         ]);
+        $order = $request->input('order') ? (int) $request->input('order') : 1;
         try {
             DB::table('groups_items')
-                ->insert(['item_id' => $request->item_id, 'group_id' => $request->group_id, 'order' => $request->order]);
+                ->insert(['item_id' => $request->item_id, 'group_id' => $request->group_id, 'order' => $order]);
             return $this->successResponse([], 'success');
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 402);
