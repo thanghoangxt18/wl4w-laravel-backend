@@ -22,7 +22,7 @@ class ExerciseResource extends JsonResource
             'reps' => $this->format($this->reps, 'integer'),
             'time_per_rep' => $this->format($this->time_per_rep, 'integer'),
             'tts_guide' => $this->format($this->tts_guide),
-            'met' => $this->format($this->met, 'float'),
+            'met' => $this->format($this->met, 'double'),
         ];
     }
 }
