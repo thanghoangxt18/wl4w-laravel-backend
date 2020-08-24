@@ -7,7 +7,7 @@ namespace App\Http\Service;
 use App\Models\Exercise;
 use App\Traits\ApiResponse;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Str;
 class ExerciseService
 {
     use ApiResponse;
@@ -24,16 +24,17 @@ class ExerciseService
             $thumb_imagePath = "";
         }
         $ext= $image->getClientOriginalExtension();
-        $mainFilename = str_random(6).date('h-i-s');
-        Storage::move($imagePath, self::STORAGE_PATH_EXERCISE. '/' . $mainFilename.".".$ext);
+        $mainFilename = Str::random(6).date('h-i-s');
+        $imagePathNew = self::STORAGE_PATH_EXERCISE. '/' . $mainFilename.".".$ext;
+        Storage::move($imagePath, $imagePathNew);
         if ($id == 0) {
             $exercise = new Exercise();
-            self::setDataToExercise($exercise, $name, $imagePath, $thumb_imagePath, $description, $video, $type, $reps, $time_per_rep, $tts_guide, $met);
+            self::setDataToExercise($exercise, $name, $imagePathNew, $thumb_imagePath, $description, $video, $type, $reps, $time_per_rep, $tts_guide, $met);
             $exercise->save();
         } else {
             $exercise = Exercise::find($id);
             if (!$image) $imagePath = $exercise->image;
-            self::setDataToExercise($exercise, $name, $imagePath, $thumb_imagePath, $description, $video, $type, $reps, $time_per_rep, $tts_guide, $met);
+            self::setDataToExercise($exercise, $name, $imagePathNew, $thumb_imagePath, $description, $video, $type, $reps, $time_per_rep, $tts_guide, $met);
             $exercise->save();
         }
     }
