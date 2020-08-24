@@ -11,14 +11,22 @@ use Illuminate\Support\Facades\Storage;
 class ExerciseService
 {
     use ApiResponse;
+    const STORAGE_PATH_EXERCISE = '/images/exercise';
 
     public static function saveToExerciseTable($id = 0, $name, $image = null, $thumb_image = null, $description, $video, $type = "by_time", $reps = 0, $time_per_rep = 0, $tts_guide, $met)
     {
-        if ($image) $imagePath = Storage::put('/images/exercise', $image);
-        if ($thumb_image) $thumb_imagePath = Storage::put('/images/exercise', $thumb_image);
-        else $thumb_imagePath = "";
+        if ($image) {
+            $imagePath = Storage::put(self::STORAGE_PATH_EXERCISE, $image);
+        }
+        if ($thumb_image) {
+            $thumb_imagePath = Storage::put(self::STORAGE_PATH_EXERCISE, $thumb_image);
+        } else {
+            $thumb_imagePath = "";
+        }
+        $ext= $image->getClientOriginalExtension();
+        $mainFilename = str_random(6).date('h-i-s');
+        Storage::move($imagePath, self::STORAGE_PATH_EXERCISE. '/' . $mainFilename.".".$ext);
         if ($id == 0) {
-            dd($type);
             $exercise = new Exercise();
             self::setDataToExercise($exercise, $name, $imagePath, $thumb_imagePath, $description, $video, $type, $reps, $time_per_rep, $tts_guide, $met);
             $exercise->save();
