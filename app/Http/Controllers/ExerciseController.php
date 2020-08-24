@@ -81,7 +81,7 @@ class ExerciseController extends Controller
             'reps' => 'int',
             'time_per_rep' => 'int',
             'tts_guide' => 'required|string',
-            'met' => 'required|required|regex:/^\d+(\.\d{1,4})?$/'
+            'met' => 'required|regex:/^\d+(\.\d{1,4})?$/'
         ]);
         try {
             ExerciseService::saveToExerciseTable(

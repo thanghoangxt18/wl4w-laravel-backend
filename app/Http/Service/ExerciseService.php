@@ -17,25 +17,27 @@ class ExerciseService
     {
         if ($image) {
             $imagePath = Storage::put(self::STORAGE_PATH_EXERCISE, $image);
+            $ext= $image->getClientOriginalExtension();
+            $fileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+
+            $mainFilename = $fileName.Str::random(6).date('Y-m-d-h-i-s');
+            $imagePathNew = self::STORAGE_PATH_EXERCISE. '/' . $mainFilename.".".$ext;
+            Storage::move($imagePath, $imagePathNew);
+            $imagePathNew = 'storage'.$imagePathNew;
         }
         if ($thumb_image) {
             $thumb_imagePath = Storage::put(self::STORAGE_PATH_EXERCISE, $thumb_image);
         } else {
             $thumb_imagePath = "";
         }
-        $ext= $image->getClientOriginalExtension();
-        $fileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
 
-        $mainFilename = $fileName.Str::random(6).date('Y-m-d-h-i-s');
-        $imagePathNew = self::STORAGE_PATH_EXERCISE. '/' . $mainFilename.".".$ext;
-        Storage::move($imagePath, $imagePathNew);
         if ($id == 0) {
             $exercise = new Exercise();
             self::setDataToExercise($exercise, $name, $imagePathNew, $thumb_imagePath, $description, $video, $type, $reps, $time_per_rep, $tts_guide, $met);
             $exercise->save();
         } else {
             $exercise = Exercise::find($id);
-            if (!$image) $imagePath = $exercise->image;
+            if (!$image) $imagePathNew = $exercise->image;
             self::setDataToExercise($exercise, $name, $imagePathNew, $thumb_imagePath, $description, $video, $type, $reps, $time_per_rep, $tts_guide, $met);
             $exercise->save();
         }
