@@ -8,10 +8,14 @@ use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
 
 class GroupController extends Controller
 {
     use ApiResponse;
+
+    const STORAGE_PATH_GROUP = '/images/group';
 
     public function getGroupList(Request $request)
     {
@@ -30,15 +34,22 @@ class GroupController extends Controller
         ]);
         $group = new Group();
         $group->name = $request->name;
-        $bannerPath = Storage::put('images/group', $request->banner);
-        $group->banner = $bannerPath;
+        $banner = $request->banner;
+        $bannerPath = Storage::put(self::STORAGE_PATH_GROUP, $banner);
+        $ext = $banner->getClientOriginalExtension();
+        $fileName = pathinfo($banner->getClientOriginalName(), PATHINFO_FILENAME);
+        $mainFilename = $fileName . Str::random(6) . date('Y-m-d-h-i-s');
+        $bannerPathNew = self::STORAGE_PATH_GROUP . '/' . $mainFilename . "." . $ext;
+        Storage::move($bannerPath, $bannerPathNew);
+        $bannerPathNew = 'storage' . $bannerPathNew;
+        $group->banner = $bannerPathNew;
         $group->description = $request->description;
         try {
             $group->save();
             return $this->successResponse([], 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
-                'Failed', 402, ['message' => 'Create failed']
+                'Failed', 402, ['message' => $e->getMessage()]
             );
         }
     }
@@ -62,24 +73,31 @@ class GroupController extends Controller
         $this->validate($request, [
             'id' => 'required|int',
             'name' => 'required|string',
+            'banner' => 'file',
             'description' => 'required|string',
         ]);
 
         $group_id = $request->id;
         $group = Group::find($group_id);
         $group->name = $request->name;
-        $bannerPath = null;
         if ($request->banner) {
-            $bannerPath = Storage::put('images/group', $request->banner);
+            $banner = $request->banner;
+            $bannerPath = Storage::put(self::STORAGE_PATH_GROUP, $banner);
+            $ext = $banner->getClientOriginalExtension();
+            $fileName = pathinfo($banner->getClientOriginalName(), PATHINFO_FILENAME);
+            $mainFilename = $fileName . Str::random(6) . date('Y-m-d-h-i-s');
+            $bannerPathNew = self::STORAGE_PATH_GROUP . '/' . $mainFilename . "." . $ext;
+            Storage::move($bannerPath, $bannerPathNew);
+            $bannerPathNew = 'storage' . $bannerPathNew;
         }
-        $group->banner = $bannerPath ? $bannerPath : $group->banner;
+        $group->banner = $bannerPathNew ? $bannerPathNew : $group->banner;
         $group->description = $request->description;
         try {
             $group->save();
             return $this->successResponse([], 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
-                'Failed', 402, ['message' => 'Create failed']
+                'Failed', 402, ['message' => $e->getMessage()]
             );
         }
     }

@@ -18,10 +18,14 @@ use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
 
 class ZoneController extends Controller
 {
     use ApiResponse;
+    const STORAGE_PATH_ZONE = '/images/zone';
+
 
     //api1:get-list-zone
     public function getZoneListAndExercise(Request $request)
@@ -87,8 +91,15 @@ class ZoneController extends Controller
         ]);
         $zone = new Zone();
         $zone->name = $request->name;
-        $bannerPath = Storage::put('images/zone', $request->banner);
-        $zone->banner = $bannerPath;
+        $banner = $request->banner;
+        $bannerPath = Storage::put(self::STORAGE_PATH_ZONE, $banner);
+        $ext = $banner->getClientOriginalExtension();
+        $fileName = pathinfo($banner->getClientOriginalName(), PATHINFO_FILENAME);
+        $mainFilename = $fileName . Str::random(6) . date('Y-m-d-h-i-s');
+        $bannerPathNew = self::STORAGE_PATH_ZONE . '/' . $mainFilename . "." . $ext;
+        Storage::move($bannerPath, $bannerPathNew);
+        $bannerPathNew = 'storage' . $bannerPathNew;
+        $zone-> banner = $bannerPathNew;
         try {
             $zone->save();
             return $this->successResponse(
@@ -139,11 +150,17 @@ class ZoneController extends Controller
 
         $zone = Zone::find($request->id);
         $zone->name = $request->name;
-        $bannerPath = $zone->banner;
         if ($request->banner) {
-            $bannerPath = Storage::put('images/zone', $request->banner);
+            $banner = $request->banner;
+            $bannerPath = Storage::put(self::STORAGE_PATH_ZONE, $banner);
+            $ext = $banner->getClientOriginalExtension();
+            $fileName = pathinfo($banner->getClientOriginalName(), PATHINFO_FILENAME);
+            $mainFilename = $fileName . Str::random(6) . date('Y-m-d-h-i-s');
+            $bannerPathNew = self::STORAGE_PATH_ZONE . '/' . $mainFilename . "." . $ext;
+            Storage::move($bannerPath, $bannerPathNew);
+            $bannerPathNew = 'storage' . $bannerPathNew;
         }
-        $zone->banner = $bannerPath;
+        $zone->banner = $bannerPathNew ? $bannerPathNew : $zone->banner;
         try {
             $zone->save();
             return $this->successResponse(
@@ -151,7 +168,7 @@ class ZoneController extends Controller
             );
         } catch (\Exception $e) {
             return $this->errorResponse(
-                'Failed', 402, ['message' => 'Create failed']
+                'Failed', 402, ['message' => $e->getMessage()]
             );
         }
     }

@@ -16,10 +16,12 @@ use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CourseController extends Controller
 {
     use ApiResponse;
+    const STORAGE_PATH_COURSE = '/images/course';
 
     public function getCourseList(Request $request)
     {
@@ -108,8 +110,15 @@ class CourseController extends Controller
         $course->description = $request->description;
         $course->layout_type = $request->layout_type;
         $course->zone_id = $request->zone_id;
-        $bannerPath = Storage::put('images/course', $request->banner);
-        $course->banner = $bannerPath;
+        $banner = $request->banner;
+        $bannerPath = Storage::put(self::STORAGE_PATH_COURSE, $banner);
+        $ext = $banner->getClientOriginalExtension();
+        $fileName = pathinfo($banner->getClientOriginalName(), PATHINFO_FILENAME);
+        $mainFilename = $fileName . Str::random(6) . date('Y-m-d-h-i-s');
+        $bannerPathNew = self::STORAGE_PATH_COURSE . '/' . $mainFilename . "." . $ext;
+        Storage::move($bannerPath, $bannerPathNew);
+        $bannerPathNew = 'storage' . $bannerPathNew;
+        $course->banner = $bannerPathNew;
         try {
             $course->save();
             return $this->successResponse([], 'success');
@@ -132,7 +141,8 @@ class CourseController extends Controller
             'name' => 'required|string',
             'description' => 'required|string',
             'layout_type' => 'required|string',
-            'zone_id' => 'required|int'
+            'zone_id' => 'required|int',
+            'banner' => 'file'
         ]);
 
         $course = Course::findOrFail($request->course_id);
@@ -140,11 +150,17 @@ class CourseController extends Controller
         $course->description = $request->description;
         $course->layout_type = $request->layout_type;
         $course->zone_id = $request->zone_id;
-        $bannerPath = $course->banner;
         if ($request->banner) {
-            $bannerPath = Storage::put('images/course', $request->banner);
+            $banner = $request->banner;
+            $bannerPath = Storage::put(self::STORAGE_PATH_COURSE, $banner);
+            $ext = $banner->getClientOriginalExtension();
+            $fileName = pathinfo($banner->getClientOriginalName(), PATHINFO_FILENAME);
+            $mainFilename = $fileName . Str::random(6) . date('Y-m-d-h-i-s');
+            $bannerPathNew = self::STORAGE_PATH_COURSE . '/' . $mainFilename . "." . $ext;
+            Storage::move($bannerPath, $bannerPathNew);
+            $bannerPathNew = 'storage' . $bannerPathNew;
         }
-        $course->banner = $bannerPath;
+        $course->banner = $bannerPathNew ? $bannerPathNew : $course->banner;
         try {
             $course->save();
             return $this->successResponse([], 'success');
@@ -204,7 +220,7 @@ class CourseController extends Controller
             'group_id' => 'required|int',
             'order' => 'int'
         ]);
-        $order = $request->input('order') ? (int) $request->input('order') : 1;
+        $order = $request->input('order') ? (int)$request->input('order') : 1;
         try {
             DB::table('groups_items')
                 ->insert(['item_id' => $request->item_id, 'group_id' => $request->group_id, 'order' => $order]);
