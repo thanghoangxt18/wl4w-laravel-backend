@@ -24,7 +24,9 @@ class ExerciseService
             $thumb_imagePath = "";
         }
         $ext= $image->getClientOriginalExtension();
-        $mainFilename = Str::random(6).date('h-i-s');
+        $fileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+
+        $mainFilename = $fileName.Str::random(6).date('Y-m-d-h-i-s');
         $imagePathNew = self::STORAGE_PATH_EXERCISE. '/' . $mainFilename.".".$ext;
         Storage::move($imagePath, $imagePathNew);
         if ($id == 0) {
