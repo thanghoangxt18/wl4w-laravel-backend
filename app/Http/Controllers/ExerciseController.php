@@ -44,7 +44,7 @@ class ExerciseController extends Controller
             'type' => 'string|required',
             'default_duration' => 'int',
             'reps' => 'required|regex:/^\d+(\.\d{1,4})?$/',
-            'time_per_rep' => 'int',
+            'time_per_rep' => 'required|required|regex:/^\d+(\.\d{1,4})?$/',
             'tts_guide' => 'required|string',
             'met' => 'required|required|regex:/^\d+(\.\d{1,4})?$/'
         ]);
