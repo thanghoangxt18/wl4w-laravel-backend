@@ -42,7 +42,8 @@ class ExerciseController extends Controller
             'description' => 'required|string',
             'video' => 'required|string',
             'type' => 'string|required',
-            'reps' => 'int',
+            'default_duration' => 'int',
+            'reps' => 'required|regex:/^\d+(\.\d{1,4})?$/',
             'time_per_rep' => 'int',
             'tts_guide' => 'required|string',
             'met' => 'required|required|regex:/^\d+(\.\d{1,4})?$/'
@@ -57,6 +58,7 @@ class ExerciseController extends Controller
                 $request->description,
                 $request->video,
                 $request->type,
+                $request->default_duration,
                 $request->reps,
                 $request->time_per_rep,
                 $request->tts_guide,
@@ -78,8 +80,9 @@ class ExerciseController extends Controller
             'description' => 'required|string',
             'video' => 'required|string',
             'type' => 'string',
+            'default_duration' => 'int',
             'reps' => 'int',
-            'time_per_rep' => 'int',
+            'time_per_rep' => 'required|regex:/^\d+(\.\d{1,4})?$/',
             'tts_guide' => 'required|string',
             'met' => 'required|regex:/^\d+(\.\d{1,4})?$/'
         ]);
@@ -92,6 +95,7 @@ class ExerciseController extends Controller
                 $request->description,
                 $request->video,
                 $request->type,
+                $request->default_duration,
                 $request->reps,
                 $request->time_per_rep,
                 $request->tts_guide,
