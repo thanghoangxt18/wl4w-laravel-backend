@@ -16,7 +16,11 @@ class ShortestExerciseResource extends JsonResource
     {
         return [
             'id' => $this->format($this->id, 'integer'),
-            'name' => $this->format($this->name)
+            'name' => $this->format($this->name),
+            'exercise_group_id' => $this->whenPivotLoaded('exercise_groups',
+                function () {
+                    return $this->pivot->id;
+                }) ? : 0,
         ];
     }
 }
