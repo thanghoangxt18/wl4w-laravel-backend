@@ -28,6 +28,10 @@ class ShortGroupResource extends JsonResource
        return [
            'id'=>$this->format($this->id,'integer'),
            'name'=>$this->format($this->name),
+           'group_item_id' => $this->whenPivotLoaded('groups_items',
+               function () {
+                   return $this->pivot->id;
+               }) ?: 0,
            'banner'=>$this->format($this->banner),
            'description'=>$this->format($this->description),
            'total_time'=>$total_time,
