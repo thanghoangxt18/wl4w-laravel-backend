@@ -125,13 +125,11 @@ class GroupController extends Controller
     public function deleteExerciseOfGroup(Request $request)
     {
         $this->validate($request, [
-            'group_id' => 'required|int',
-            'exercise_id' => 'required|int'
+            'exercise_group_id' => 'required|int'
         ]);
         try {
             DB::table('exercise_groups')
-                ->where('exercise_id', '=', $request->exercise_id)
-                ->where('group_id', '=', $request->group_id)
+                ->where('id', '=', $request->exercise_group_id)
                 ->delete();
             return $this->successResponse([], 'Success');
         } catch (\Exception $e) {

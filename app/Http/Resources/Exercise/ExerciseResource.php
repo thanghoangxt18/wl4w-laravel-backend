@@ -14,6 +14,10 @@ class ExerciseResource extends JsonResource
         return [
             'id' => $this->format($this->id, 'integer'),
             'name' => $this->format($this->name),
+            'exercise_group_id' => $this->whenPivotLoaded('exercise_groups',
+                function () {
+                    return $this->pivot->id;
+                }) ?: 0,
             'image' => $this->format($this->image),
             'description' => $this->format($this->description),
             'video' => $this->format($this->video),
