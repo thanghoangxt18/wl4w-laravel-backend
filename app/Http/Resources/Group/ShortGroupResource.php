@@ -26,9 +26,9 @@ class ShortGroupResource extends JsonResource
        foreach ($exercise as $item)
            $total_time+= $item->reps * $item->time_per_rep;
        return [
-           'id'=>$this->format($this->id,'integer'),
+           'group_id'=>$this->format($this->id,'integer'),
            'name'=>$this->format($this->name),
-           'group_item_id' => $this->whenPivotLoaded('groups_items',
+           'id' => $this->whenPivotLoaded('groups_items',
                function () {
                    return $this->pivot->id;
                }) ?: 0,

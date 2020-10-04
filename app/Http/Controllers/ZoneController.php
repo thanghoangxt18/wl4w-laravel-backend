@@ -212,7 +212,7 @@ class ZoneController extends Controller
     public function deleteZone(Request $request)
     {
         $this->validate($request, [
-            'zone_id' => 'string|required'
+            'zone_id' => 'integer|required'
         ]);
         try {
             DB::table('exercise_zones')->where('zone_id', '=', $request->zone_id);

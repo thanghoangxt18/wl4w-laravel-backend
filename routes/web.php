@@ -105,6 +105,14 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
         $router->post('get-course-by-keyword', 'CourseController@getCourseByKeyword');
         $router->post('update-order-of-exercise', 'GroupController@updateOrderOfExercise');
 
+        $router->post('get-music', 'MusicController@getMusic');
+
+        $router->post('create-music', 'MusicController@createMusic');
+
+        $router->post('update-music', 'MusicController@updateMusic');
+
+        $router->post('delete-music', 'MusicController@deleteMusic');
+
     });
 
 });
