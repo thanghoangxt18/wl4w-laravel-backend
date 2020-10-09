@@ -30,19 +30,16 @@ class GroupController extends Controller
         $this->validate($request, [
             'name' => 'required|string',
             'banner' => 'required|file',
+            'thumb' => 'file',
             'description' => 'required|string',
         ]);
         $group = new Group();
         $group->name = $request->name;
-        $banner = $request->banner;
-        $bannerPath = Storage::put(self::STORAGE_PATH_GROUP, $banner);
-        $ext = $banner->getClientOriginalExtension();
-        $fileName = pathinfo($banner->getClientOriginalName(), PATHINFO_FILENAME);
-        $mainFilename = $fileName . Str::random(6) . date('Y-m-d-h-i-s');
-        $bannerPathNew = self::STORAGE_PATH_GROUP . '/' . $mainFilename . "." . $ext;
-        Storage::move($bannerPath, $bannerPathNew);
-        $bannerPathNew = 'storage' . $bannerPathNew;
-        $group->banner = $bannerPathNew;
+        $bannerUrl = $this->uploadImage($request->banner);
+        $thumbUrl = $this->uploadImage($request->thumb);
+
+        $group->banner = $bannerUrl;
+        $group->thumb = $thumbUrl;
         $group->description = $request->description;
         try {
             $group->save();
@@ -62,7 +59,7 @@ class GroupController extends Controller
                 ->where('name', 'LIKE', '%' . $request->keyword . "%")
                 ->paginate($per_page);
         } else {
-            $groupListSearched = Group::paginate($per_page);
+            $groupListSearched = Group::query()->paginate($per_page);
         }
         $result = new GroupCollection($groupListSearched);
         return $this->successResponse($result, 'Success', 200);
@@ -80,17 +77,11 @@ class GroupController extends Controller
         $group_id = $request->id;
         $group = Group::find($group_id);
         $group->name = $request->name;
-        if ($request->banner) {
-            $banner = $request->banner;
-            $bannerPath = Storage::put(self::STORAGE_PATH_GROUP, $banner);
-            $ext = $banner->getClientOriginalExtension();
-            $fileName = pathinfo($banner->getClientOriginalName(), PATHINFO_FILENAME);
-            $mainFilename = $fileName . Str::random(6) . date('Y-m-d-h-i-s');
-            $bannerPathNew = self::STORAGE_PATH_GROUP . '/' . $mainFilename . "." . $ext;
-            Storage::move($bannerPath, $bannerPathNew);
-            $bannerPathNew = 'storage' . $bannerPathNew;
-        }
-        $group->banner = $bannerPathNew ? $bannerPathNew : $group->banner;
+        $bannerUrl = $this->uploadImage($request->banner);
+        $thumbUrl = $this->uploadImage($request->thumb);
+
+        $group->banner = $bannerUrl ? $bannerUrl : $group->banner;
+        $group->thumb = $thumbUrl ? $thumbUrl : $group->thumb;
         $group->description = $request->description;
         try {
             $group->save();
@@ -178,5 +169,19 @@ class GroupController extends Controller
             return $this->errorResponse(
                 'Failed', 402, ['message' => $e->getMessage()]);
         }
+    }
+
+    public function uploadImage($file) {
+        if ($file) {
+            $path = Storage::put(self::STORAGE_PATH_GROUP, $file);
+            $ext = $file->getClientOriginalExtension();
+            $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $mainFilename = $fileName . Str::random(6) . date('Y-m-d-h-i-s');
+            $url = self::STORAGE_PATH_GROUP . '/' . $mainFilename . "." . $ext;
+            Storage::move($path, $url);
+            $url = 'storage' . $url;
+        }
+
+        return $url ?? '';
     }
 }

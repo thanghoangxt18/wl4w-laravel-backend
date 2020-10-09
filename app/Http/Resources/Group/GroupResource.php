@@ -31,6 +31,7 @@ class GroupResource extends JsonResource
                     return $this->pivot->id;
                 }) ?: 0,
             'banner' => $this->format($this->banner),
+            'thumb' => $this->format($this->thumb),
             'description' => $this->format($this->description),
             'total_time' => $total_time,
             'total_exercise' => $total_exercise,
