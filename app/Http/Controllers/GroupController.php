@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\Group\GroupCollection;
+use App\Http\Resources\Group\GroupResource;
 use App\Models\Group;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
@@ -43,7 +44,7 @@ class GroupController extends Controller
         $group->description = $request->description;
         try {
             $group->save();
-            return $this->successResponse([], 'Success');
+            return $this->successResponse(new GroupResource($group), 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
                 'Failed', 402, ['message' => $e->getMessage()]
@@ -85,7 +86,7 @@ class GroupController extends Controller
         $group->description = $request->description;
         try {
             $group->save();
-            return $this->successResponse([], 'Success');
+            return $this->successResponse(new GroupResource($group), 'Success');
         } catch (\Exception $e) {
             return $this->errorResponse(
                 'Failed', 402, ['message' => $e->getMessage()]
