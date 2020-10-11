@@ -58,7 +58,7 @@ class MusicController extends Controller
         $this->validate($request, [
             'name' => 'required|string',
             'bpm' => 'required|integer',
-            'url' => 'required|file'
+            'url' => 'required'
         ]);
         $music = new Music();
         $music->name = $request->name;

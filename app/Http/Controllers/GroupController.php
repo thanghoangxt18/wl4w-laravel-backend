@@ -30,8 +30,8 @@ class GroupController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string',
-            'banner' => 'required|file',
-            'thumb' => 'file',
+            'banner' => 'required',
+            'thumb' => 'required',
             'description' => 'required|string',
         ]);
         $group = new Group();
@@ -71,7 +71,6 @@ class GroupController extends Controller
         $this->validate($request, [
             'id' => 'required|int',
             'name' => 'required|string',
-            'banner' => 'file',
             'description' => 'required|string',
         ]);
 

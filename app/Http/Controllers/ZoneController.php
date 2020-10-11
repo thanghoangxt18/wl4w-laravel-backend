@@ -87,7 +87,7 @@ class ZoneController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string',
-            'banner' => 'required|file'
+            'banner' => 'required'
         ]);
         $zone = new Zone();
         $zone->name = $request->name;

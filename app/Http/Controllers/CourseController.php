@@ -102,7 +102,7 @@ class CourseController extends Controller
             'description' => 'required|string',
             'layout_type' => 'required|string',
             'zone_id' => 'required|int',
-            'banner' => 'required|file'
+            'banner' => 'required'
         ]);
 
         $course = new Course();
@@ -141,8 +141,7 @@ class CourseController extends Controller
             'name' => 'required|string',
             'description' => 'required|string',
             'layout_type' => 'required|string',
-            'zone_id' => 'required|int',
-            'banner' => 'file'
+            'zone_id' => 'required|int'
         ]);
 
         $course = Course::findOrFail($request->course_id);
