@@ -158,8 +158,8 @@ class CourseController extends Controller
             $bannerPathNew = self::STORAGE_PATH_COURSE . '/' . $mainFilename . "." . $ext;
             Storage::move($bannerPath, $bannerPathNew);
             $bannerPathNew = 'storage' . $bannerPathNew;
+            $course->banner = $bannerPathNew ? $bannerPathNew : $course->banner;
         }
-        $course->banner = $bannerPathNew ? $bannerPathNew : $course->banner;
         try {
             $course->save();
             return $this->successResponse([], 'success');
