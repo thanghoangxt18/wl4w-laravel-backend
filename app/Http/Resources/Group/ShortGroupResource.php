@@ -20,15 +20,15 @@ class ShortGroupResource extends JsonResource
 
     public function toArray($request)
     {
-       $exercise = $this->exercise ;
+       $exercise = $this->exercise;
        $total_exercise= count($exercise);
        $total_time = 0;
        foreach ($exercise as $item)
            $total_time+= $item->reps * $item->time_per_rep;
        return [
-           'group_id'=>$this->format($this->id,'integer'),
+           'id'=>$this->format($this->id,'integer'),
            'name'=>$this->format($this->name),
-           'id' => $this->whenPivotLoaded('groups_items',
+           'group_item_id' => $this->whenPivotLoaded('groups_items',
                function () {
                    return $this->pivot->id;
                }) ?: 0,
